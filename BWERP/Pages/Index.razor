@@ -1,0 +1,355 @@
+﻿@page "/"
+@using BWERP.Models.WeelkyReport;
+@using BWERP.Repositories.Interfaces;
+@using ChartJs.Blazor.LineChart;
+@using ChartJs.Blazor.PieChart
+@using ChartJs.Blazor.BarChart
+@using ChartJs.Blazor.PolarAreaChart
+
+<PageTitle>Index</PageTitle>
+<div class="app-content pt-3 p-md-2 p-lg-3">
+	<div class="container-xl">
+		<div class="row g-2 mb-4">
+			@*<div class="col-12 col-lg-6">
+			<div class="app-card app-card-chart h-100 shadow-sm">
+			<div class="app-card-header p-3 border-0">
+			<h4 class="app-card-title">Area Pie Chart Demo</h4>
+			</div><!--//app-card-header-->
+			<div class="app-card-body p-4">
+			<div class="chart-container">
+			<Chart Config="_config"></Chart>
+			</div>
+			</div><!--//app-card-body-->
+			</div><!--//app-card-->
+			</div><!--//col-->*@
+			<div class="col-12 col-lg-6">
+				<div class="app-card app-card-chart h-100 shadow-sm">
+					<div class="app-card-header p-3 border-0">
+						<h4 class="app-card-title">IP Production</h4>
+					</div><!--//app-card-header-->
+					<div class="app-card-body p-4">
+						<div class="chart-container">
+							<Chart Config="_ipBarConfig"></Chart>
+						</div>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//col-->
+			
+			<div class="col-12 col-lg-6">
+				<div class="app-card app-card-chart h-100 shadow-sm">
+					<div class="app-card-header p-3 border-0">
+						<h4 class="app-card-title">OS Production</h4>
+					</div><!--//app-card-header-->
+					<div class="app-card-body p-4">
+						<div class="chart-container">
+							<Chart Config="_osBarConfig"></Chart>
+						</div>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//col-->
+		</div><!--//row-->
+		<div class="row mb-2">
+			<div class="col-12 col-lg-6">
+				<div class="app-card app-card-chart h-100 shadow-sm">
+					<div class="app-card-header p-3 border-0">
+						<h4 class="app-card-title">Master Batch Production</h4>
+					</div><!--//app-card-header-->
+					<div class="app-card-body p-4">
+						<div class="chart-container">
+							<Chart Config="_mblineConfig"></Chart>
+						</div>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//col-->
+
+			@if (_outstandingbyweekDtos != null)
+			{
+				<div class="col-12 col-lg-6">
+					<div class="app-card app-card-chart h-100 shadow-sm">
+						<div class="app-card-body p-4">
+							<div class="chart-container">
+								<Chart Config="_outstandinglineConfig"></Chart>
+							</div>
+						</div><!--//app-card-body-->
+					</div><!--//app-card-->
+				</div>
+				<!--//col-->
+			}
+		</div>
+	</div><!--//container-fluid-->
+</div><!--//app-content-->
+@code {
+
+	[Inject] private IWeeklyReportApiClient weeklyreportApi { get; set; }
+	private List<OutstandingReceivableByWeekDto> _outstandingbyweekDtos;
+
+	private PieConfig _config;
+	private BarConfig _ipBarConfig, _osBarConfig;
+	private PolarAreaConfig _polarConfig;
+	private LineConfig _mblineConfig;
+	private LineConfig _outstandinglineConfig;
+
+	[CascadingParameter]
+	private Error? _error { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Load_OSProduction();
+		Load_IPProduction();
+		Load_MBProduction();
+		await GetOutstandingReceivableByWeek();
+	}
+	//
+	private async Task GetOutstandingReceivableByWeek()
+	{
+		try
+		{
+			_outstandingbyweekDtos = await weeklyreportApi.GetOutstandingReceivableByWeek(DateTime.Now.Year, DateTime.Now.Month);
+			LoadOutstandingLineChart(_outstandingbyweekDtos);
+		}
+		catch (Exception ex)
+		{
+			_error.ProcessError(ex);
+		}
+	}
+
+	private void LoadOutstandingLineChart(List<OutstandingReceivableByWeekDto> _outstandingweekly)
+	{
+		_outstandinglineConfig = new LineConfig
+			{
+				Options = new LineOptions
+				{
+					Responsive = true,
+					Title = new OptionsTitle
+					{
+						Display = true,
+						Text = "Long term Outstanding Bonds status in recent weeks"
+					}
+				}
+			};
+		// Define the array of month names
+		foreach (string months in new[] { "Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7", "Week 8" })
+		{
+			_outstandinglineConfig.Data.Labels.Add(months);
+		}
+		var dataValues = _outstandingweekly.Select(s => s.EndAmount).ToArray();
+
+		LineDataset<int> dataset = new LineDataset<int>(dataValues)
+			{
+				Label = "End Amount",
+				BackgroundColor = "rgba(75, 192, 192, 0.2)",
+				BorderColor = "rgba(75, 192, 192, 1)",
+				BorderWidth = 1
+			};
+
+		_outstandinglineConfig.Data.Datasets.Add(dataset);
+	}
+
+	private void Load_MBProduction()
+	{
+		_mblineConfig = new LineConfig
+			{
+				Options = new LineOptions
+				{
+					Responsive = true,
+					Title = new OptionsTitle
+					{
+						Display = false,
+						Text = "Production in 2024"
+					}
+				}
+			};
+
+		// Define the array of month names
+		foreach (string months in new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Otc", "Nov", "Dec" })
+		{
+			_mblineConfig.Data.Labels.Add(months);
+		}
+		var dataValues1 = new[] { 515390, 640065, 988650, 748175, 788840, 964471, 927705, 833812, 834985, 913480, 1008645, 952630 };
+		var dataValues2 = new[] { 1085415, 652805, 1133349, 945685, 1014330, 1027265, 0, 0, 0, 0, 0, 0 };
+
+		LineDataset<int> dataset1 = new LineDataset<int>(dataValues1)
+			{
+				Label = "2023",
+				BackgroundColor = "rgba(75, 192, 192, 0.2)",
+				BorderColor = "rgba(75, 192, 192, 1)",
+				BorderWidth = 1
+			};
+
+		LineDataset<int> dataset2 = new LineDataset<int>(dataValues2)
+			{
+				Label = "2024",
+				BackgroundColor = "rgba(255, 99, 132, 0.2)",
+				BorderColor = "rgba(255, 99, 132, 1)",
+				BorderWidth = 1
+			};
+
+		_mblineConfig.Data.Datasets.Add(dataset1);
+		_mblineConfig.Data.Datasets.Add(dataset2);
+	}
+
+	private void LoadPieChart()
+	{
+		_config = new PieConfig
+			{
+				Options = new PieOptions
+				{
+					Responsive = true,
+					Title = new OptionsTitle
+					{
+						Display = true,
+						Text = "ChartJs.Blazor Pie Chart"
+					}
+				}
+			};
+
+		foreach (string color in new[] { "Red", "Yellow", "Green", "Blue" })
+		{
+			_config.Data.Labels.Add(color);
+		}
+
+		PieDataset<int> dataset = new PieDataset<int>(new[] { 6, 5, 3, 7 })
+			{
+				BackgroundColor = new[]
+											{
+			ColorUtil.ColorHexString(255, 99, 132), // Slice 1 aka "Red"
+            ColorUtil.ColorHexString(255, 205, 86), // Slice 2 aka "Yellow"
+            ColorUtil.ColorHexString(75, 192, 192), // Slice 3 aka "Green"
+            ColorUtil.ColorHexString(54, 162, 235), // Slice 4 aka "Blue"
+        }
+			};
+
+		_config.Data.Datasets.Add(dataset);
+	}
+	private void Load_OSProduction()
+	{
+		// Initialize _barConfig with BarOptions and BarData
+		_osBarConfig = new BarConfig
+			{
+				Options = new BarOptions
+				{
+					Responsive = true,
+					Title = new OptionsTitle
+					{
+						Display = false,
+						Text = "The Comparison between 2023 and 2024"
+					}
+				}
+			};
+
+		// Define the array of month names
+		foreach (string months in new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Otc", "Nov", "Dec" })
+		{
+			_osBarConfig.Data.Labels.Add(months);
+		}
+
+		// Define the first dataset values and background colors
+		int[] dataValues1 = { 364907, 408632, 471211, 527976, 532137, 496501, 535345, 480442, 458842, 538804, 519294, 568368 };
+		string[] backgroundColors1 = Enumerable.Repeat(ColorUtil.ColorHexString(75, 192, 192), dataValues1.Length).ToArray();
+
+		// Create the first BarDataset with the data values and background colors
+		BarDataset<int> dataset1 = new BarDataset<int>(dataValues1)
+			{
+				BackgroundColor = backgroundColors1,
+				Label = "2023"
+			};
+
+		// Define the second dataset values and background colors
+		int[] dataValues2 = { 678110, 384502, 574234, 588524, 677921, 594924, 0, 0, 0, 0, 0, 0 };
+		string[] backgroundColors2 = Enumerable.Repeat(ColorUtil.ColorHexString(54, 162, 235), dataValues2.Length).ToArray();
+
+		// Create the second BarDataset with the data values and background colors
+		BarDataset<int> dataset2 = new BarDataset<int>(dataValues2)
+			{
+				BackgroundColor = backgroundColors2,
+				Label = "2024"
+			};
+
+		// Add both datasets to the Data property
+		_osBarConfig.Data.Datasets.Add(dataset1);
+		_osBarConfig.Data.Datasets.Add(dataset2);
+	}
+
+	private void Load_IPProduction()
+	{
+		// Initialize _barConfig with BarOptions and BarData
+		_ipBarConfig = new BarConfig
+			{
+				Options = new BarOptions
+				{
+					Responsive = true,
+					Title = new OptionsTitle
+					{
+						Display = false,
+						Text = "The Comparison between 2023 and 2024"
+					}
+				}
+			};
+
+		// Define the array of month names
+		foreach (string months in new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Otc", "Nov", "Dec" })
+		{
+			_ipBarConfig.Data.Labels.Add(months);
+		}
+
+		// Define the first dataset values and background colors
+		int[] dataValues1 = { 201712, 216339, 618143, 589413, 456513, 674441, 747523, 601683, 528333, 590664, 598208, 596170 };
+		string[] backgroundColors1 = Enumerable.Repeat(ColorUtil.ColorHexString(75, 192, 192), dataValues1.Length).ToArray();
+
+		// Create the first BarDataset with the data values and background colors
+		BarDataset<int> dataset1 = new BarDataset<int>(dataValues1)
+			{
+				BackgroundColor = backgroundColors1,
+				Label = "2023"
+			};
+
+		// Define the second dataset values and background colors
+		int[] dataValues2 = { 859670, 638259, 1000901, 912649, 1213391, 945963, 0, 0, 0, 0, 0, 0 };
+		string[] backgroundColors2 = Enumerable.Repeat(ColorUtil.ColorHexString(54, 162, 235), dataValues2.Length).ToArray();
+
+		// Create the second BarDataset with the data values and background colors
+		BarDataset<int> dataset2 = new BarDataset<int>(dataValues2)
+			{
+				BackgroundColor = backgroundColors2,
+				Label = "2024"
+			};
+
+		// Add both datasets to the Data property
+		_ipBarConfig.Data.Datasets.Add(dataset1);
+		_ipBarConfig.Data.Datasets.Add(dataset2);
+	}
+
+	private void LoadPolarChart()
+	{
+		_polarConfig = new PolarAreaConfig
+			{
+				Options = new PolarAreaOptions
+				{
+					Responsive = true,
+					Title = new OptionsTitle
+					{
+						Display = true,
+						Text = "ChartJs.Blazor Polar Chart"
+					}
+				}
+			};
+
+		foreach (string color in new[] { "Red", "Yellow", "Green", "Blue" })
+		{
+			_polarConfig.Data.Labels.Add(color);
+		}
+
+		PolarAreaDataset<int> dataset = new PolarAreaDataset<int>(new[] { 12, 20, 9, 25 })
+			{
+				BackgroundColor = new[]
+													{
+			ColorUtil.ColorHexString(255, 99, 132), // Slice 1 aka "Red"
+            ColorUtil.ColorHexString(255, 205, 86), // Slice 2 aka "Yellow"
+            ColorUtil.ColorHexString(75, 192, 192), // Slice 3 aka "Green"
+            ColorUtil.ColorHexString(54, 162, 235), // Slice 4 aka "Blue"
+        }
+			};
+
+		_polarConfig.Data.Datasets.Add(dataset);
+	}
+}

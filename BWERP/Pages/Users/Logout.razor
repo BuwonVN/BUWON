@@ -1,0 +1,13 @@
+﻿@page "/users/logout"
+@using BWERP.Repositories.Interfaces;
+
+@inject IAuthenService authenService;
+@inject NavigationManager NavigationManager
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        await authenService.Logout();
+        NavigationManager.NavigateTo("/users/login");
+    }
+}

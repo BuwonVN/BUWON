@@ -1,0 +1,83 @@
+﻿@page "/users/useredit/{userId}"
+
+@using BWERP.Models.User;
+@using BWERP.Repositories.Interfaces
+@using BWERP.Pages.Components
+
+@inject IUserApiClient userApiClient
+@inject NavigationManager NavigationManager;
+@inject IToastService toastService
+
+@if (_user == null)
+{
+	<LoadingIndicator></LoadingIndicator>
+}
+else
+{
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+			<h1 class="app-page-title">Edit User @_user.Username</h1>
+			<hr class="mb-4">
+			<div class="row g-4 settings-section">
+				<div class="app-card app-card-settings shadow-sm p-4">
+					<div class="app-card-body">
+						<EditForm Model="_user" OnValidSubmit="SubmitTask">
+							<DataAnnotationsValidator />
+							<div class="mb-3">
+								<label for="Name" class="form-label">First Name</label>
+								<InputText class="form-control" @bind-Value="_user.FirstName"></InputText>
+								<ValidationMessage For="()=>_user.FirstName"></ValidationMessage>
+							</div>
+
+							<div class="mb-3">
+								<label for="Name" class="form-label">Last Name</label>
+								<InputText class="form-control" @bind-Value="_user.LastName"></InputText>
+								<ValidationMessage For="()=>_user.LastName"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Email</label>
+								<InputText class="form-control" @bind-Value="_user.Email"></InputText>
+								<ValidationMessage For="()=>_user.Email"></ValidationMessage>
+							</div>
+							<button type="submit" class="btn app-btn-primary">Save Changes</button>
+							<a class="btn app-btn-secondary" href="/users/userlist">Cancel</a>
+						</EditForm>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//row-->
+		</div><!--//container-fluid-->
+	</div>
+	<!--//app-content-->
+}
+
+@code {
+	[Parameter]
+	public string userId { set; get; }
+
+	private UserUpdateRequest _user = new UserUpdateRequest();
+
+	protected async override Task OnInitializedAsync()
+	{
+		var userDtos = await userApiClient.GetUserById(userId);
+		_user.FirstName = userDtos.FirstName;
+		_user.LastName = userDtos.LastName;
+		_user.Email = userDtos.Email;
+		_user.isActive = userDtos.isActive;
+		_user.Username = userDtos.Username;
+	}
+
+	private async Task SubmitTask(EditContext context)
+	{
+		var result = await userApiClient.UpdateUser(Guid.Parse(userId), _user);
+		if (result)
+		{
+			toastService.ShowSuccess($"{_user.Username} has been updated successfully.");
+			NavigationManager.NavigateTo("/users/userlist");
+		}
+		else
+		{
+			toastService.ShowError($"An error occurred in progress. Please contact to administrator.");
+
+		}
+	}
+}

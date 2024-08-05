@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BWERP", "BWERP\BWERP.csproj", "{62DBD0E8-40BE-47F1-A56A-7AB8874E160A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BWERP.Api", "BWERP.Api\BWERP.Api.csproj", "{7850FB38-B450-4483-9188-F5DF7CC250A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BWERP.Models", "BWERP.Models\BWERP.Models.csproj", "{651FE01E-DA2D-479D-8C19-231C9763F21F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{62DBD0E8-40BE-47F1-A56A-7AB8874E160A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62DBD0E8-40BE-47F1-A56A-7AB8874E160A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62DBD0E8-40BE-47F1-A56A-7AB8874E160A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62DBD0E8-40BE-47F1-A56A-7AB8874E160A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7850FB38-B450-4483-9188-F5DF7CC250A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7850FB38-B450-4483-9188-F5DF7CC250A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7850FB38-B450-4483-9188-F5DF7CC250A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7850FB38-B450-4483-9188-F5DF7CC250A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{651FE01E-DA2D-479D-8C19-231C9763F21F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{651FE01E-DA2D-479D-8C19-231C9763F21F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{651FE01E-DA2D-479D-8C19-231C9763F21F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{651FE01E-DA2D-479D-8C19-231C9763F21F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18FEC62A-183A-4A7F-8040-A304DD6E1CB8}
+	EndGlobalSection
+EndGlobal

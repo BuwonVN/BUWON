@@ -1,0 +1,25 @@
+﻿@using BWERP.Models.Enums
+@switch (Status)
+{
+    case Status.Open:
+                        <span class="badge bg-success">@nameof(Status.Open)</span>
+        break;
+    case Status.Inprogress:
+                        <span class="badge bg-warning">@nameof(Status.Inprogress)</span>
+        break;
+    case Status.Resolved:
+                        <span class="badge bg-secondary">@nameof(Status.Resolved)</span>
+        break;
+    case Status.Closed:
+                        <span class="badge bg-dark">@nameof(Status.Closed)</span>
+        break;
+    case Status.Canceled:
+                        <span class="badge bg-light">@nameof(Status.Canceled)</span>
+        break;
+}
+
+
+@code {
+    [Parameter]
+    public Status Status { set; get; }
+}

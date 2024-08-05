@@ -1,0 +1,67 @@
+﻿@page "/comment/commentlist"
+@using BWERP.Pages.Components
+
+@if (commentViews == null)
+{
+	<LoadingIndicator></LoadingIndicator>
+}
+else
+{
+	<div class="col-12 mt-2">
+		<div class="row">
+			<div class="app-card app-card-stats-table h-100 shadow-sm">
+				<div class="app-card-header p-3">
+					<div class="row justify-content-between align-items-center">
+						<div class="col-auto">
+							<h4 class="app-card-title">Comment list</h4>
+						</div><!--//col-->
+						<div class="col-auto">
+							<a href="/comment/create" class="btn app-btn-secondary">Create</a>
+							<a href="/comment/dailyrptdetail" class="btn btn-outline-info">View Report</a>
+							@*<div class="card-header-action">
+						<a href="/DepartmentDailyReport/DailyReportCreate" class="btn app-btn-secondary">Create</a>
+						</div><!--//card-header-actions-->*@
+						</div><!--//col-->
+					</div><!--//row-->
+				</div><!--//app-card-header-->
+				<div class="app-card-body p-3 p-lg-4">
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead class="table-light">
+								<tr class="text-center">
+									<th>Department</th>
+									<th>Created Date</th>
+									<th>Created By</th>
+									<th>Updated Date</th>
+									@*<th>Updated By</th>*@
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var item in commentViews)
+								{
+									<tr>
+										<td>@item.FuncName</td>
+										<td>@item.CreatedDate</td>
+										<td>@item.CreatedUser</td>
+										<td>@item.UpdatedDate</td>
+										@*<td>@item.UpdatedUser</td>*@
+										<td class="text-center">
+											<a href="/comment/commentdetail/@item.Id" class="btn btn-primary">Detail</a>
+											<a href="/comment/commentedit/@item.Id" class="btn btn-warning">Edit</a>
+											@*<button class="btn btn-danger" @onclick="()=> OnDeleteTask(item.Id)">Delete</button>*@
+										</td>
+									</tr>
+								}
+							</tbody>
+							<tfoot>
+								<Pagination MetaData="MetaData" Spread="2" SelectedPage="SelectedPage"></Pagination>
+							</tfoot>
+						</table>
+					</div><!--//table-responsive-->
+				</div><!--//app-card-body-->
+			</div><!--//app-card-->
+		</div>
+	</div>
+	<!--//col-->
+}

@@ -1,0 +1,127 @@
+﻿@layout BlankLayout
+@page "/productions/productionstatus"
+@implements IDisposable
+
+<nav>
+	<div class="nav nav-tabs" id="nav-tab" role="tablist">
+		<button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">IP</button>
+		<button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">OS</button>
+	</div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+	<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+		<div class="col-12 mt-2">
+			<div class="row mb-2 px-4" style="font-size:1.3em">
+				<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+					@*Display MBCP Production here*@
+					@if (_ipViewDtos != null)
+					{
+						@*<div class="app-card-header p-1 border-bottom-1">
+					<div class="row align-items-center gx-1">
+					<div class="col-auto">
+					<div class="app-icon-holder">
+					<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-receipt" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z" />
+					<path fill-rule="evenodd" d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
+					</svg>
+					</div><!--//icon-holder-->
+
+					</div><!--//col-->
+					<div class="col-auto">
+					<h3 class="app-card-title">MBCP Production</h3>
+					</div><!--//col-->
+					</div><!--//row-->
+					</div>*@
+						<!--//app-card-header-->
+						<div class="row col-12">
+							<div class="col-lg-6">
+								<h4>IP PRODUCTION STATUS (@currentDate)</h4>
+							</div>
+							<div class="col-lg-6 text-end">
+								<div class="text-end h2">TOTAL: @string.Format("{0:N0}",sumQtyIP)</div>
+							</div>
+						</div>
+						<!-- table-->
+						<div class="row" style="width:100%">
+							<div class="app-card-body p-3">
+								<div class="table-responsive">
+									<table class="table table-bordered">
+										<thead class="table-grey">
+											<tr class="text-center h3">
+												<th>DESCRIPTION</th>
+												<th>COLOR</th>
+												<th>QTY</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach (var item in _ipViewDtos)
+											{
+												<tr class="text-end h3" style="background-color: black; color: white;">
+													<td class="text-start">@item.Model</td>
+													<td class="text-start">@item.Color</td>
+													<td>@string.Format("{0:N0}",@item.ProdQty)</td>
+												</tr>
+											}
+										</tbody>
+										
+									</table>
+								</div><!--//table-responsive-->
+							</div><!--//app-card-body-->
+						</div>
+					}
+					@*End of table*@
+
+				</div><!--//app-card-body-->
+			</div><!--//app-card-->
+		</div>
+	</div>
+
+	<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+		<div class="col-12 mt-2">
+			<div class="row mb-2 px-4" style="font-size:1.3em">
+				<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+					@*Display MBCP Production here*@
+					@if (_osViewDtos != null)
+					{
+						<div class="row col-12">
+							<div class="col-lg-6">
+								<h4>OS PRODUCTION STATUS (@currentDate)</h4>
+							</div>
+							<div class="col-lg-6 text-end">
+								<div class="text-end h2">TOTAL: @string.Format("{0:N0}",sumQtyOS)</div>
+							</div>
+						</div>
+						<!-- table-->
+						<div class="row" style="width:100%">
+							<div class="app-card-body p-3">
+								<div class="table-responsive">
+									<table class="table table-bordered">
+										<thead class="table-grey">
+											<tr class="text-center h3">
+												<th>DESCRIPTION</th>
+												<th>COLOR</th>
+												<th>QTY</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach (var item in _osViewDtos)
+											{
+												<tr class="text-end h3">
+													<td class="text-start" style="background-color: black; color: white;">@item.Model</td>
+													<td class="text-start" style="background-color: black; color: white;">@item.Color</td>
+													<td style="background-color: black; color: white;">@string.Format("{0:N0}",@item.ProdQty)</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div><!--//table-responsive-->
+							</div><!--//app-card-body-->
+						</div>
+					}
+					@*End of table*@
+
+				</div><!--//app-card-body-->
+			</div><!--//app-card-->
+		</div>
+	</div>
+</div>

@@ -1,0 +1,37 @@
+﻿@using BWERP.Models.Task;
+@using BWERP.Repositories.Interfaces
+
+@if (ShowDialog && _roleViewDtos != null)
+{
+    <div class="modal fade show d-block" id="assignModel" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <EditForm Model="Model" OnSubmit="HandleAssignSubmit">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Assign Role to User</h5>
+                        <button type="button" class="close" data-dismiss="modal" @onclick="()=>Hide()" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Recipient:</label>BW
+                            <InputSelect class="form-control" @bind-Value="Model.RoleId">
+                                <option value="@Guid.Empty">Select a role</option>
+                                @foreach (var role in _roleViewDtos)
+                                {
+                                    <option value="@role.Id">@role.Name</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="()=>Hide()" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Assign</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}

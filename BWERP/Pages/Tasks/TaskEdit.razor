@@ -1,0 +1,94 @@
+﻿@page "/tasks/taskedit/{taskId}"
+@using BWERP.Models.Task
+@using BWERP.Models.Enums
+@using BWERP.Repositories.Interfaces
+@using Blazored.Toast.Services;
+@using BWERP.Pages.Components
+
+@inject ITaskApiClient taskApiClient
+@inject NavigationManager NavigationManager;
+@inject IToastService toastService
+
+@if (Task == null)
+{
+	<LoadingIndicator></LoadingIndicator>
+}
+else
+{
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+			<h1 class="app-page-title">Edit Task @Task.Name</h1>
+			<hr class="mb-4">
+			<div class="row g-4 settings-section">
+				<div class="app-card app-card-settings shadow-sm p-4">
+					<div class="app-card-body">
+						<EditForm Model="Task" OnValidSubmit="SubmitTask">
+							<DataAnnotationsValidator />
+							<div class="mb-3">
+								<label for="Name" class="form-label">Name</label>
+								<InputText class="form-control" @bind-Value="Task.Name"></InputText>
+								<ValidationMessage For="()=>Task.Name"></ValidationMessage>
+							</div>
+
+							<div class="mb-3">
+								<label for="Name" class="form-label">Priority</label>
+								<InputSelect class="form-select" @bind-Value="Task.Priority">
+									<option>Select a priority</option>
+									@foreach (string item in Enum.GetNames(typeof(Priority)))
+									{
+												<option value="@item">@item</option>
+									}
+								</InputSelect>
+								<ValidationMessage For="()=>Task.Priority"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Status</label>
+								<InputSelect class="form-select" @bind-Value="Task.Status">
+									<option>Select status</option>
+									@foreach (string item in Enum.GetNames(typeof(Status)))
+									{
+										<option value="@item">@item</option>
+									}
+								</InputSelect>
+								<ValidationMessage For="()=>Task.Status"></ValidationMessage>
+							</div>
+							<button type="submit" class="btn app-btn-primary">Save Changes</button>
+							<a class="btn app-btn-secondary" href="/tasks/tasklist">Cancel</a>
+						</EditForm>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//row-->
+		</div><!--//container-fluid-->
+	</div>
+	<!--//app-content-->
+}
+
+@code {
+	[Parameter]
+	public string taskId { set; get; }
+
+	private TaskUpdateRequest Task = new TaskUpdateRequest();
+
+	protected async override Task OnInitializedAsync()
+	{
+		var taskDto = await taskApiClient.GetTaskById(taskId);
+		Task.Name = taskDto.Name;
+		Task.Priority = taskDto.Priority;
+		Task.Status = taskDto.Status;
+	}
+
+	private async Task SubmitTask(EditContext context)
+	{
+		var result = await taskApiClient.UpdateTask(Guid.Parse(taskId), Task)	;
+		if (result)
+		{
+			toastService.ShowSuccess($"{Task.Name} has been updated successfully.");
+			NavigationManager.NavigateTo("/tasks/taskList");
+		}
+		else
+		{
+			toastService.ShowError($"An error occurred in progress. Please contact to administrator.");
+
+		}
+	}
+}

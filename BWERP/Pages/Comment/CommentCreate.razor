@@ -1,0 +1,69 @@
+﻿@page "/comment/create"
+
+@using BWERP.Models.Comment;
+@using BWERP.Models.Enums;
+@using BWERP.Pages.Components
+@using BWERP.Repositories.Interfaces;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using BWERP.Models.Department;
+
+@inject IDepartmentApiClient departmentApiClient;
+@inject ICommentApiClient commentApi;
+@inject NavigationManager NavigationManager;
+@inject IToastService toastService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (departmentViewDtos != null)
+{
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+			<h1 class="app-page-title">Create a new comment</h1>
+			<hr class="mb-4">
+			<div class="row g-4 settings-section">
+				<div class="app-card app-card-settings shadow-sm p-4">
+					<div class="app-card-body">
+						<EditForm Model="commentCreate" OnValidSubmit="SubmitTask">
+							<DataAnnotationsValidator />
+							<div class="mb-3">
+								<label for="Name" class="form-label">Created Date</label>
+								<InputDate class="form-control" @bind-Value="commentCreate.CreatedDate"></InputDate>
+								<ValidationMessage For="()=>commentCreate.CreatedDate"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Function Name</label>
+								
+								<InputSelect class="form-select" @bind-Value="commentCreate.DepartmentId">
+									<option selected value="0">--Select a department--</option>
+
+									@foreach (var dept in departmentViewDtos)
+									{
+										<option value="@dept.Id">@dept.Name</option>
+									}
+								</InputSelect>
+								<ValidationMessage For="()=>commentCreate.DepartmentId"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Content</label>
+								<CKEditorBlazor Id="ckcomment"
+											@bind-Value=@commentCreate.Content>
+								</CKEditorBlazor>
+								<ValidationMessage For="()=>commentCreate.Content"></ValidationMessage>
+							</div>
+							<button type="submit" class="btn app-btn-primary">Save Changes</button>
+							<a class="btn app-btn-secondary" href="/comment/commentlist">Cancel</a>
+						</EditForm>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//row-->
+		</div><!--//container-fluid-->
+	</div>
+	<!--//app-content-->
+}
+else
+{
+	<LoadingIndicator></LoadingIndicator>
+}
+
+@code {
+	
+}

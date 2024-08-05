@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@ckeditor/ckeditor5-html-support": "^39.0.0",
+    "ckeditor5": "^42.0.0"
+  }
+}

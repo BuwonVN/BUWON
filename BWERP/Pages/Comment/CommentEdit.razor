@@ -1,0 +1,111 @@
+﻿@page "/comment/commentedit/{commentid:int}"
+@using BWERP.Models.Comment;
+@using BWERP.Models.Department;
+@using BWERP.Models.Enums;
+@using BWERP.Pages.Components
+@using BWERP.Repositories.Interfaces;
+@using BWERP.Repositories.Services;
+
+@inject IDepartmentApiClient departmentApiClient;
+@inject NavigationManager NavigationManager;
+@inject IToastService toastService;
+@inject ICommentApiClient cmtService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (departmentViewDtos != null)
+{
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+			<h1 class="app-page-title">Update Function</h1>
+			<hr class="mb-4">
+			<div class="row g-4 settings-section">
+				<div class="app-card app-card-settings shadow-sm p-4">
+					<div class="app-card-body">
+						<EditForm Model="editRequest" OnValidSubmit="SubmitTask">
+							<DataAnnotationsValidator />
+							<div class="mb-3">
+								<label for="Name" class="form-label">Created Date</label>
+								<InputDate class="form-control" @bind-Value="editRequest.UpdatedDate"></InputDate>
+								<ValidationMessage For="()=>editRequest.UpdatedDate"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Priority</label>
+								@*<InputSelect class="form-select" @bind-Value="editRequest.Functions">
+									<option>Select a priority</option>
+									@foreach (string item in Enum.GetNames(typeof(Functions)))
+									{
+										<option value="@item">@item.Replace("_"," ")</option>
+									}
+								</InputSelect>
+								<ValidationMessage For="()=>editRequest.Functions"></ValidationMessage>*@
+								<InputSelect class="form-select" @bind-Value="editRequest.DepartmentId">
+									<option selected value="0">--Select a department--</option>
+									@foreach (var dept in departmentViewDtos)
+									{
+										<option value="@dept.Id">@dept.Name</option>
+									}
+								</InputSelect>
+								<ValidationMessage For="()=>editRequest.DepartmentId"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Content</label>
+								<CKEditorBlazor Id="ckcomment"
+											@bind-Value=@editRequest.Content>
+								</CKEditorBlazor>
+								<ValidationMessage For="()=>editRequest.Content"></ValidationMessage>
+							</div>
+
+							<button type="submit" class="btn app-btn-primary">Save Changes</button>
+							<a class="btn app-btn-secondary" href="/comment/commentlist">Cancel</a>
+						</EditForm>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//row-->
+		</div><!--//container-fluid-->
+	</div>
+	<!--//app-content-->
+}
+else
+{
+	<LoadingIndicator></LoadingIndicator>
+}
+
+@code {
+	[Parameter]
+	public int commentid { get; set; }
+
+	private CommentEditRequest editRequest = new CommentEditRequest();
+	private List<DepartmentViewDto> departmentViewDtos;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var cmt = await cmtService.GetCommentById(commentid);
+		editRequest.DepartmentId = cmt.DepartmentId;
+		editRequest.Content = cmt.Content;
+		editRequest.UpdatedBy = cmt.UpdatedBy;
+		editRequest.UpdatedDate = DateTime.Now;
+		//GET DEPARTMENT
+		departmentViewDtos = await departmentApiClient.GetDepartmentList();
+	}
+
+	private async Task SubmitTask(EditContext context)
+	{
+		//AUTHORIZE
+		var authState = await AuthenticationStateProvider
+			.GetAuthenticationStateAsync();
+		//GET USERID
+		var userid = authState.User.FindFirst(c => c.Type.Contains("UserId"))?.Value;
+		editRequest.UpdatedBy = Guid.Parse(userid);
+		var result = await cmtService.UpdateComment(commentid, editRequest);
+		if (result)
+		{
+			toastService.ShowSuccess($"Report has been Updated successfully.");
+			NavigationManager.NavigateTo("/comment/commentlist");
+		}
+		else
+		{
+			toastService.ShowError($"An error occurred in progress. Please contact to administrator.");
+
+		}
+	}
+}

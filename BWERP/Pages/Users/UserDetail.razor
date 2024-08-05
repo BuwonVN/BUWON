@@ -1,0 +1,49 @@
+﻿@page "/users/userdetail/{userid}"
+@using BWERP.Pages.Components
+@using BWERP.Models.User
+@using BWERP.Repositories.Interfaces
+
+@inject IUserApiClient userApiClient
+
+@if (userViewRequest == null)
+{
+	<LoadingIndicator></LoadingIndicator>
+}
+else
+{
+	<h3>Task @userViewRequest.Username</h3>
+	<table class="table">
+		<tr>
+			<td>First Name</td>
+			<td>@userViewRequest.FirstName</td>
+		</tr>
+		<tr>
+			<td>Last Name</td>
+			<td>@userViewRequest.LastName</td>
+		</tr>
+		<tr>
+			<td>Username</td>
+			<td>@userViewRequest.Username</td>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td>@userViewRequest.Email</td>
+		</tr>
+		<tr>
+			<td>CreatedDate</td>
+			<td>@userViewRequest.CreatedDate</td>
+		</tr>
+	</table>
+}
+
+@code {
+	[Parameter]
+	public string userid { set; get; }
+
+	private UserViewRequest userViewRequest { set; get; }
+
+	protected async override Task OnInitializedAsync()
+	{
+		userViewRequest = await userApiClient.GetUserById(userid);
+	}
+}

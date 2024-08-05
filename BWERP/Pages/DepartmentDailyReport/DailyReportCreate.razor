@@ -1,0 +1,109 @@
+﻿@page "/DepartmentDailyReport/DailyReportCreate"
+@using BWERP.Models.Department;
+@using BWERP.Repositories.Interfaces;
+@using BWERP.Models.DepartmentDailyReport;
+@using BWERP.Pages.Components;
+@using Microsoft.AspNetCore.Components.Authorization;
+
+@inject IDailyReportApiClient dailyreportApiClient;
+@inject IDepartmentApiClient departmentApiClient;
+@inject NavigationManager NavigationManager;
+@inject IToastService toastService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (departmentViewDtos != null)
+{		
+	<div class="app-content pt-3 p-md-3 p-lg-4">
+		<div class="container-xl">
+			<h1 class="app-page-title">Create a new report</h1>
+			<hr class="mb-4">
+			<div class="row g-4 settings-section">
+				<div class="app-card app-card-settings shadow-sm p-4">
+					<div class="app-card-body">
+						<EditForm Model="dailyrpt" OnValidSubmit="SubmitTask">
+							<DataAnnotationsValidator />
+							<div class="mb-3">
+								<label for="Name" class="form-label">Report Date</label>
+								<InputDate class="form-control" @bind-Value="dailyrpt.CreatedDate"></InputDate>
+								<ValidationMessage For="()=>dailyrpt.CreatedDate"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Department</label>
+								<InputSelect class="form-select" @bind-Value="dailyrpt.DepartmentId">
+									<option selected value="0">--Select a department--</option>
+									@foreach (var dept in departmentViewDtos)
+									{
+										<option value="@dept.Id">@dept.Name</option>
+									}
+								</InputSelect>
+								<ValidationMessage For="()=>dailyrpt.DepartmentId"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Today Report</label>
+								<CKEditorBlazor Id="cktodayrpt"
+											@bind-Value=@dailyrpt.TodayTask>
+								</CKEditorBlazor>
+								@*<InputTextArea class="form-control" style="height: 250px;" @bind-Value="dailyrpt.TodayTask"></InputTextArea>*@
+								<ValidationMessage For="()=>dailyrpt.TodayTask"></ValidationMessage>
+							</div>
+							<div class="mb-3">
+								<label for="Name" class="form-label">Tomorrow Report</label>
+								<CKEditorBlazor Id="cktomorrowrpt"
+											@bind-Value=@dailyrpt.TomorrowTask>
+								</CKEditorBlazor>
+								@*<InputTextArea class="form-control" style="height: 250px;" @bind-Value="dailyrpt.TomorrowTask"></InputTextArea>*@
+								<ValidationMessage For="()=>dailyrpt.TomorrowTask"></ValidationMessage>
+							</div>
+							<button type="submit" class="btn app-btn-primary">Save Changes</button>
+							<a class="btn app-btn-secondary" href="/DepartmentDailyReport/DailyReportList">Cancel</a>
+						</EditForm>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//row-->
+		</div><!--//container-fluid-->
+	</div>
+	<!--//app-content-->
+}
+else
+{
+	<LoadingIndicator></LoadingIndicator>
+}
+
+@code {
+	private DailyReportCreateRequest dailyrpt = new DailyReportCreateRequest();
+	private List<DepartmentViewDto> departmentViewDtos;
+	private string _userid;
+	protected override async Task OnInitializedAsync()
+	{
+		//AUTHORIZE
+		var authState = await AuthenticationStateProvider
+			.GetAuthenticationStateAsync();
+		//GET USERID
+		_userid = authState.User.FindFirst(c => c.Type.Contains("UserId"))?.Value;
+
+		departmentViewDtos = await departmentApiClient.GetDepartmentByUser(_userid);
+		dailyrpt.CreatedDate = DateTime.Now;
+	}
+
+	private async Task SubmitTask(EditContext context)
+	{
+		//VALIDATE DEPARTMENT
+		if (dailyrpt.DepartmentId == 0)
+		{
+			toastService.ShowError($"Department can not be null. Please check again.!");
+			return;
+		}
+		dailyrpt.UserId = Guid.Parse(_userid);
+
+		var result = await dailyreportApiClient.CreateDailyReport(dailyrpt);
+		if (result)
+		{
+			toastService.ShowSuccess($"Report has been created successfully.");
+			NavigationManager.NavigateTo("/DepartmentDailyReport/DailyReportList");
+		}
+		else
+		{
+			toastService.ShowError($"An error occurred in progress. Please contact to administrator.");
+		}
+	}
+}

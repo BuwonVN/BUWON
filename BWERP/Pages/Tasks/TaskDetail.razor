@@ -1,0 +1,53 @@
+﻿@page "/tasks/taskdetail/{taskId}"
+@using BWERP.Pages.Components
+@using BWERP.Models.Task
+@using BWERP.Repositories.Interfaces
+
+@inject ITaskApiClient taskApiClient;
+
+@if (taskViewRequest == null)
+{
+    <LoadingIndicator></LoadingIndicator>
+}
+else
+{
+    <h3>Task @taskViewRequest.Name</h3>
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>@taskViewRequest.Name</td>
+        </tr>
+        <tr>
+            <td>Assignee</td>
+            <td>@taskViewRequest.Assignee</td>
+        </tr>
+        <tr>
+            <td>Create date</td>
+            <td>@taskViewRequest.CreatedDate</td>
+        </tr>
+        <tr>
+            <td>Priority</td>
+            <td>@taskViewRequest.Priority</td>
+            @*<td><PriorityLabel Priority="@taskViewRequest.Priority"></PriorityLabel></td>*@
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>@taskViewRequest.Status</td>
+            @*<td><StatusLabel Status="Task.Status"></StatusLabel></td>*@
+        </tr>
+    </table>
+}
+
+
+@code {
+
+    [Parameter]
+    public string taskId { set; get; }
+
+    private TaskViewRequest taskViewRequest { set; get; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        taskViewRequest = await taskApiClient.GetTaskById(taskId);
+    }
+}
