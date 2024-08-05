@@ -16,6 +16,8 @@ namespace BWERP.Pages.Users
 		private Guid DeleteId { set; get; }
 
 		protected Confirmation DeleteConfirmation { set; get; }
+		protected RoleAssign AssignUserDialog { set; get; }
+
 		[Inject] private IUserApiClient _userApiClient { get; set; }
         [Inject] IToastService toastService { set; get; }
 		private UserListSearch _searchUser = new UserListSearch();
@@ -73,6 +75,19 @@ namespace BWERP.Pages.Users
 				{
 					await GetListUsers();
 				}
+			}
+		}
+		//ASSIGN ROLE
+		public void OpenAssignPopup(Guid id)
+		{
+			AssignUserDialog.Show(id);
+		}
+
+		public async Task AssignTaskSuccess(bool result)
+		{
+			if (result)
+			{
+				await GetListUsers();
 			}
 		}
 	}

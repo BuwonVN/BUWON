@@ -3,7 +3,7 @@
 @using BWERP.Pages.Components
 @using BWERP.Repositories.Interfaces;
 
-<SearchByMonth OnSubmit="SearchForm"></SearchByMonth>
+@*<SearchByMonth OnSubmit="SearchForm"></SearchByMonth>*@
 @if (commentView == null)
 {
 	<LoadingIndicator></LoadingIndicator>
@@ -13,9 +13,7 @@ else
 	<div class="col-12 mt-2">
 		<div class="row mb-2" style="font-size:1.17em">
 			<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
-				@if (_outstandingDtos != null)
-				{
-					@*card header*@
+				@*card header*@
 					<div class="app-card-header p-1 border-bottom-1">
 						<div class="row align-items-center gx-1">
 							<div class="col-auto">
@@ -33,6 +31,9 @@ else
 						</div><!--//row-->
 					</div>
 					<!--//app-card-header-->
+
+				@if (_outstandingDtos != null)
+				{
 					<!-- table-->
 					<div class="row" style="width:100%">
 						<div class="app-card-body p-3">
@@ -80,11 +81,11 @@ else
 					</div>
 				}
 				@*Outstanding Receivable Detail*@
-				<div class="row m-lg-2">
+				@*<div class="row m-lg-2">
 					<button class="btn btn-outline-info" @onclick="ToggleDivVisibility">
 						@(isDivVisible ? "Hide" : "View") Information
 					</button>
-				</div>
+				</div>*@
 				@if (isDivVisible)
 				{ 
 					<!-- table-->

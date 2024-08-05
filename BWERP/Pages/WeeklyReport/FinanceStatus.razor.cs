@@ -42,7 +42,7 @@ namespace BWERP.Pages.WeeklyReport
 			month = DateTime.Now.Month;
 			try
 			{
-				await GetData();
+				//await GetData();
 				commentView = await commentApi.GetCommentByDeptId(8);
 
 				string pattern = @"<thead(?![^>]*\bclass\b)";
