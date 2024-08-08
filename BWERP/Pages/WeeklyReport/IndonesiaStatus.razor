@@ -34,6 +34,9 @@ else
 						<div class="row">
 							@(new MarkupString(commentView.Content))
 						</div>
+						<div class="row">
+							@(new MarkupString(commentView2.Content))
+						</div>
 					</div>
 				</div>
 			</div><!--//app-card-body-->
@@ -49,15 +52,20 @@ else
 	[Inject] IToastService toastService { set; get; }
 
 	private CommentViewRequest commentView { set; get; }
+	private CommentViewRequest commentView2 { set; get; }
 
 	protected override async Task OnInitializedAsync()
 	{
 		try
 		{
 			commentView = await commentApi.GetCommentByDeptId(12);
+			commentView2 = await commentApi.GetCommentByDeptId(13);
+
 			string pattern = @"<thead(?![^>]*\bclass\b)";
 			string replacement = "<thead class=\"table-grey\"";
 			commentView.Content = Regex.Replace(commentView.Content, pattern, replacement);
+
+			commentView2.Content = Regex.Replace(commentView2.Content, pattern, replacement);
 		}
 		catch (Exception ex)
 		{

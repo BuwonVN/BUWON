@@ -36,8 +36,8 @@ builder.Services.AddScoped<IAuthenService, AuthenService>();
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-	BaseAddress = new Uri("https://localhost:7036")
-	//BaseAddress = new Uri("http://10.11.10.42:8080/")
+	//BaseAddress = new Uri("https://localhost:7036")
+	BaseAddress = new Uri("http://10.11.10.42:8080/")
 });
 
 builder.Services.AddHttpClient();

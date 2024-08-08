@@ -77,11 +77,13 @@
                     toolbar: {
                         items: [
                             'heading', 'bold', 'italic', 'underline', 'link',
-                            'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|',
+                            //'bulletedList', 'numberedList', '|', 
+                            'outdent', 'indent', '|',
                             'alignment',
                             /*'fontBackgroundColor',*/
                             'fontFamily', 'fontSize', 'fontColor', 
-                            'imageUpload', 'imageInsert', 'insertTable', 'removeFormat',
+                            //'imageUpload', 'imageInsert', 
+                            'insertTable', 'removeFormat',
                             'undo', 'redo', '|', 'sourceEditing'
                         ]
                     },

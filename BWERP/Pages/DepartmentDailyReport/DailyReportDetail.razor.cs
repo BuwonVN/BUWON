@@ -76,7 +76,6 @@ namespace BWERP.Pages.DepartmentDailyReport
 					emailDto.CcAddress = string.Join(";", emailAddresses.CcAddresses);
 					emailDto.Subject = $"{dateRpt:yyyy-MM-dd} - 업무 공유";
 					emailDto.Body = $"Dear all,<br>" +
-									$"We would like to share with you the report on {dateRpt:yyyy-MM-dd}.<br>" +
 									$"Please take a look at this below." +
 									$"{string.Join("<br>", stringList)}";
 				}
@@ -119,10 +118,11 @@ namespace BWERP.Pages.DepartmentDailyReport
 			ToAddresses = new List<string>
 			{
 				"jschoi@buwon.com;chha@buwon.com;hskim@buwon.com;jkkim@buwon.com;cbkim@buwon.com;cblee@buwon.com;skkyong@buwon.com;msyu@buwon.com;ihkim@buwon.com;sjkang@buwon.com;sjlee@buwon.com;mjrbergin@buwon.com;bthien@buwon.com;isyun@buwon.com;jhlim@buwon.com;hdkim@buwon.com"
+				//"bthien@buwon.com"
 			},
 			CcAddresses = new List<string>
 			{
-				"wsjoo@buwon.com;wkjeon@buwon.com;kskim@buwon.com;sbhong@buwon.com;dschoi@buwon.com;secretary@buwon.com;nltmai@buwon.com"				
+				"wsjoo@buwon.com;wkjeon@buwon.com;kskim@buwon.com;sbhong@buwon.com;dschoi@buwon.com;secretary@buwon.com;nltmai@buwon.com"
 			}
 		};
 	}

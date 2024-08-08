@@ -59,30 +59,54 @@ namespace BWERP.Api.Controllers
 			var rptDtos = rpt.Select(x => new DailyReportView()
 			{
 				Id = x.Id,
-				TodayTask = x.TodayTask,
-				TomorrowTask = x.TomorrowTask,
+                TodayTask = x.TodayTask,
+                TomorrowTask = x.TomorrowTask,
 				CreatedBy = x.AppUser.UserName,
 				CreatedDate = x.CreatedDate,
 				UpdatedDate = x.UpdatedDate,
 				DepartmentId = x.DepartmentId,
 				DepartmentName = x.Department.Name,
 
-				HtmlBody = $"<h4 style='border-bottom: 1px solid #000; padding-bottom: 2px;'>{x.Department.Name}</h4>" +
-				   "<div style='display: flex;'>" +
-				   "<div style='flex: 1; padding: 10px;'>" +
-				   "<strong>금일</strong><br/>" +
-				   $"{x.TodayTask}" +
-				   "</div>" +
-				   "<div style='flex: 1; padding: 10px;'>" +
-				   "<strong>익일</strong><br/>" +
-				   $"{x.TomorrowTask}" +
-				   "</div>" +
-				   "</div>"
-			}).OrderBy(x => x.DepartmentId);
+                //HtmlBody = $"<h4 style='border-bottom: 1px solid #000; padding-bottom: 2px;'>{x.Department.Name}</h4>" +
+                //   "<div style='display: flex;'>" +
+                //   "<div style='flex: 1; padding: 10px;'>" +
+                //   "<strong>금일</strong><br/>" +
+                //   $"{x.TodayTask}" +
+                //   "</div>" +
+                //   "<div style='flex: 1; padding: 10px;'>" +
+                //   "<strong>익일</strong><br/>" +
+                //   $"{x.TomorrowTask}" +
+                //   "</div>" +
+                //   "</div>"
+
+                //HtmlBody = $"<h4>{x.Department.Name}</h4>" +
+                //       "<div style='padding: 1px;'>" +
+                //       $"{ReplaceTags(x.TodayTask)}" +
+                //       "</div>"
+
+                HtmlBody = $"<h4 style='text-decoration: underline;font-size: 16px'>{x.Department.Name}</h4>" +
+                       "<div style='padding: 1px;'>" +
+                       $"{ReplaceTags(x.TodayTask)}" +
+                       "</div>"
+
+            }).OrderBy(x => x.DepartmentId);
 			return Ok(rptDtos);
 		}
 
-		[HttpPost]
+        // Helper method to replace <ul> and <li> tags with <p> tags
+        private string ReplaceTags(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+
+            input = input.Replace("<ul>", "<p>");
+            input = input.Replace("</ul>", "</p>");
+            input = input.Replace("<li>", "<p>");
+            input = input.Replace("</li>", "</p>");
+
+            return input;
+        }
+
+        [HttpPost]
 		public async Task<IActionResult> Create([FromBody] DailyReportCreateRequest request)
 		{
 			if (!ModelState.IsValid)
