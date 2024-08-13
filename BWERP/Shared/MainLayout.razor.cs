@@ -25,18 +25,25 @@ namespace BWERP.Shared
 		protected override async Task OnInitializedAsync()
 		{
 			//AUTHORIZE
-			var authState = await AuthenticationStateProvider
-				.GetAuthenticationStateAsync();
+			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 			var user = authState.User;
 
 			if (user.Identity is not null && user.Identity.IsAuthenticated)
 			{
-				NavigationManager.NavigateTo("/");
-				leftsidebar = await menuApiClient.GetMenuByUser(user.Identity.Name);
-				//foreach (var icon in leftsidebar)
-				//{
-				//    var newIcon = icon.Icon.Trim('"');
-				//}
+				try
+				{
+					leftsidebar = await menuApiClient.GetMenuByUser(user.Identity.Name);
+
+					// Avoid unnecessary redirect
+					if (NavigationManager.Uri != NavigationManager.BaseUri)
+					{
+						NavigationManager.NavigateTo("/");
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.Error.WriteLine($"Error fetching menu: {ex.Message}");
+				}
 			}
 			else
 			{

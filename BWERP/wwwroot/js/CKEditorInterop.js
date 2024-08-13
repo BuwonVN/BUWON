@@ -77,7 +77,7 @@
                     toolbar: {
                         items: [
                             'heading', 'bold', 'italic', 'underline', 'link',
-                            //'bulletedList', 'numberedList', '|', 
+                            'bulletedList', 'numberedList', '|', 
                             'outdent', 'indent', '|',
                             'alignment',
                             /*'fontBackgroundColor',*/

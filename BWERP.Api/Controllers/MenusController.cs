@@ -92,7 +92,7 @@ namespace BWERP.Api.Controllers
                 Name = request.Name,
                 //Description = request.Priority.HasValue ? request.Priority.Value : Priority.Low,
                 Description = request.Description,
-                ParentId = request.ParentId,
+                ParentId = request.ParentId == null ? 0 : request.ParentId,
                 Url = request.Url,
                 SortOrder = request.SortOrder,
                 Icon= request.Icon,
@@ -116,7 +116,7 @@ namespace BWERP.Api.Controllers
 
             taskFromDb.Name = request.Name;
             taskFromDb.Description = request.Description;
-            taskFromDb.ParentId = request.ParentId;
+            taskFromDb.ParentId = request.ParentId == null ? 0 : request.ParentId;
             taskFromDb.Url = request.Url;
             taskFromDb.SortOrder = request.SortOrder;
             taskFromDb.Icon = request.Icon;

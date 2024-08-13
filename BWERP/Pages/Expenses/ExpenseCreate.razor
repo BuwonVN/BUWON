@@ -1,0 +1,56 @@
+﻿@page "/expenses/expensecreate"
+@inject NavigationManager NavigationManager;
+@inject IToastService toastService
+
+<div class="app-content pt-3 p-md-3 p-lg-4">
+	<div class="container-xl">
+		<h1 class="app-page-title">Create Expense</h1>
+		<hr class="mb-4">
+		<div class="row g-4 settings-section">
+			<div class="app-card app-card-settings shadow-sm p-4">
+				<div class="app-card-body">
+					<EditForm Model="expenseCreateDto" OnValidSubmit="SubmitTask">
+						<DataAnnotationsValidator />
+						<div class="mb-3">
+							<label for="ParentId" class="form-label">Category</label>
+							<InputSelect class="form-select" @bind-Value="@expenseCreateDto.CategoryId">
+								<option value="">-- Select Category --</option>
+								@foreach (var category in expenseCategory)
+								{
+									<option value="@category.Id">@category.Name</option>
+								}
+							</InputSelect>
+							<ValidationMessage For="()=>expenseCreateDto.CategoryId"></ValidationMessage>
+						</div>
+
+						<div class="mb-3">
+							<label for="Name" class="form-label">Description</label>
+							<InputText class="form-control" @bind-Value="expenseCreateDto.Description"></InputText>
+							<ValidationMessage For="()=>expenseCreateDto.Description"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="Description" class="form-label">Date</label>
+							<InputDate class="form-control" @bind-Value="expenseCreateDto.CreatedDate"></InputDate>
+							<ValidationMessage For="()=>expenseCreateDto.CreatedDate"></ValidationMessage>
+						</div>
+
+						<div class="mb-3">
+							<label for="Icon" class="form-label">Amount</label>
+							<InputNumber class="form-control" @bind-Value="expenseCreateDto.Amount"></InputNumber>
+							<ValidationMessage For="()=>expenseCreateDto.Amount"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="IconPath" class="form-label">Remark</label>
+							<InputText class="form-control" @bind-Value="expenseCreateDto.Note"></InputText>
+							<ValidationMessage For="()=>expenseCreateDto.Note"></ValidationMessage>
+						</div>
+
+						<button type="submit" class="btn app-btn-primary">Save Changes</button>
+						<a class="btn app-btn-secondary" href="/expenses/expenselist">Cancel</a>
+					</EditForm>
+				</div><!--//app-card-body-->
+			</div><!--//app-card-->
+		</div><!--//row-->
+	</div><!--//container-fluid-->
+</div>
+<!--//app-content-->

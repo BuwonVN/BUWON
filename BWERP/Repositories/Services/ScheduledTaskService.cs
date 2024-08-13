@@ -28,7 +28,7 @@ namespace BWERP.Repositories.Services
 		private async void DoWork(object state)
 		{
 			var currentTime = DateTime.Now;
-			var sendTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 9, 49, 0); // 4:00 PM
+			var sendTime = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, 16, 30, 0); // 4:00 PM
 			if (currentTime >= sendTime && currentTime < sendTime.AddMinutes(1))
 			{
 				using (var scope = _serviceProvider.CreateScope())
@@ -51,11 +51,17 @@ namespace BWERP.Repositories.Services
 					emailDto.ToAdress = string.Join(";", emailAddresses.ToAddresses);
 					emailDto.CcAddress = string.Join(";", emailAddresses.CcAddresses);
 					emailDto.Subject = $"{rptdate:yyyy-MM-dd} - 업무 공유";
-					emailDto.Body = $"Dear all,<br>" +
-									$"Please take a look at this below." +
-									$"{string.Join("<br>", stringList)}";
-									
-					try
+                    //emailDto.Body = $"Dear all,<br>" +
+                    //				$"Please take a look at this below." +
+                    //				$"{string.Join("<br>", stringList)}";
+                    emailDto.Body =
+                "<div style='margin-left: -35px;'>" + // Wrapper div for the entire email
+                "Dear all,<br>" +
+                "Please take a look at this below.<br>" +
+                $"{string.Join("<br>", stringList)}" +
+                "</div>";
+
+                    try
 					{
 						var result = await _sendMailService.SendEmailAsync(emailDto);
 					}

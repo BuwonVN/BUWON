@@ -61,6 +61,7 @@ builder.Services.AddTransient<IWeeklyReportRepository, WeeklyReportRepository>()
 builder.Services.AddTransient<IProductionRepository, ProductionRepository>();
 builder.Services.AddTransient<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddTransient<ITaskRepository, TaskRepository>();
+builder.Services.AddTransient<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddTransient<IMenuRepository, MenuRepository>();
 builder.Services.AddTransient<IRoleMenusRepository, RoleMenusRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
