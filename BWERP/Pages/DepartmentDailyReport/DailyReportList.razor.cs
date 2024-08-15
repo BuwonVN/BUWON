@@ -1,13 +1,10 @@
 ﻿using Blazored.Toast.Services;
-using BWERP.Models.Comment;
 using BWERP.Models.DepartmentDailyReport;
 using BWERP.Models.SeedWork;
 using BWERP.Repositories.Interfaces;
 using BWERP.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
-using System;
 
 namespace BWERP.Pages.DepartmentDailyReport
 {

@@ -5,45 +5,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="~/" />
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="BWERP.styles.css" rel="stylesheet" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- FontAwesome JS-->
-    <script defer src="~/assets/
-			/fontawesome/js/all.min.js"></script>
-    <!-- App CSS -->    
-    <link id="theme-style" rel="stylesheet" href="~/assets/css/portal.css">
-    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+	<base href="~/" />
+	<link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+	<link href="css/site.css" rel="stylesheet" />
+	<link href="BWERP.styles.css" rel="stylesheet" />
+	<component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 
-    @*Set Interval before redirect to login page*@
-    <script>
-        function redirectToLoginWithDelay() {
-            setTimeout(function () {
-                window.location.href = '/users/login';
-            }, 5000); // 3000 milliseconds = 3 seconds
-        }
-    </script>
+	<!-- FontAwesome JS-->
+	<script defer src="~/assets/plugins/fontawesome/js/all.min.js"></script>
+	<!-- App CSS -->
+	<link id="theme-style" rel="stylesheet" href="~/assets/css/portal.css">
+
+	@*Set Interval before redirect to login page*@
+	<script>
+		function redirectToLoginWithDelay() {
+			setTimeout(function () {
+				window.location.href = '/users/login';
+			}, 5000); // 3000 milliseconds = 3 seconds
+		}
+	</script>
+
+	@*Sheet JS Library*@
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+	<script>
+		function exportDataToExcel(data, fileName) {
+			// Create a new workbook and add a worksheet
+			var workbook = XLSX.utils.book_new();
+			var worksheet = XLSX.utils.json_to_sheet(data);
+
+			// Append the worksheet to the workbook
+			XLSX.utils.book_append_sheet(workbook, worksheet, 'Expenses');
+
+			// Generate a file and trigger a download
+			XLSX.writeFile(workbook, fileName);
+		}
+	</script>
+
+	@*Ckeditor*@
+	<script src="~/js/ckeditor.js"></script>
+	<script src="~/js/CKEditorInterop.js"></script>
+
+	<script src="~/assets/plugins/popper.min.js"></script>
+	<script src="~/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+	@*Charts JS Library*@
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+	@*Connect Charts with Blazor*@
+	<script src="_content/ChartJs.Blazor.Fork/ChartJsBlazorInterop.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+	@*Side Panel*@
+	<script src="~/js/app.js"></script>
 </head>
 <body>
-    @RenderBody()
-    <!-- Ckeditor -->
-    <script src="~/js/ckeditor.js"></script>
-    <script src="~/js/CKEditorInterop.js"></script>
-    
-    <script src="~/assets/plugins/popper.min.js"></script>
-    <script src="~/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <!-- Charts JS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-
-    <!-- This is the glue between Blazor and Chart.js -->
-    <script src="_content/ChartJs.Blazor.Fork/ChartJsBlazorInterop.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <!-- Page Specific JS -->
-    <script src="~/js/app.js"></script>
-    <script src="_framework/blazor.server.js"></script>
+	@RenderBody()	
+	<script src="_framework/blazor.server.js"></script>
 </body>
 </html>

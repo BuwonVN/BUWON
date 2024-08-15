@@ -1,10 +1,7 @@
-﻿using Blazored.Toast.Services;
+﻿using BWERP.Models.ExpenseCategory;
 using BWERP.Models.Exppense;
-using BWERP.Repositories.Services;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components;
-using BWERP.Repositories.Interfaces;
-using BWERP.Models.ExpenseCategory;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace BWERP.Pages.Expenses
 {
@@ -13,7 +10,6 @@ namespace BWERP.Pages.Expenses
 		private ExpenseCreateDto expenseCreateDto = new ExpenseCreateDto();
 		private List<ExpenseCategoryView> expenseCategory = new List<ExpenseCategoryView>();
 
-		[Inject] private IExpenseApiClient expenseApiClient { get; set; }
 		protected override async Task OnInitializedAsync()
 		{
 			expenseCategory = await expenseApiClient.GetCategory();
@@ -21,6 +17,13 @@ namespace BWERP.Pages.Expenses
 		}
 		private async Task SubmitTask(EditContext context)
 		{
+			//VALIDATE DEPARTMENT
+			if (expenseCreateDto.CategoryId == 0)
+			{
+				toastService.ShowError($"Please select Category.");
+				return;
+			}
+
 			expenseCreateDto.CreatedUser = "admin";
 			var result = await expenseApiClient.CreateExpense(expenseCreateDto);
 			if (result)

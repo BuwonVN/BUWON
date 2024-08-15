@@ -76,17 +76,23 @@ namespace BWERP.Api.Repositories.Services
 			}
 		}
 
-		public async Task<PagedList<ExpenseView>> GetListExpense(int pageNumber, int pageSize)
+		public async Task<PagedList<ExpenseView>> GetListExpense(ExpenseSearch expenseSearch)
 		{
 			try
 			{
-				var query = "Select * from Expenses";
-				var data = await sqlconMain.QueryAsync<ExpenseView>(query);
+				var parameters = new 
+				{ 
+					expenseSearch.Year, 
+					expenseSearch.Month, 
+					expenseSearch.CreatedUser,
+					CategoryId = (object)expenseSearch.CategoryId ?? DBNull.Value
+				}; 
+				var data = await sqlconMain.QueryAsync<ExpenseView>("spExpenseGetAll", parameters, commandType: CommandType.StoredProcedure);
 
-				var pagedData = data.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+				var pagedData = data.Skip((expenseSearch.PageNumber - 1) * expenseSearch.PageSize).Take(expenseSearch.PageSize).ToList();
 				var totalCount = data.Count();
 
-				return new PagedList<ExpenseView>(pagedData, totalCount, pageNumber, pageSize);
+				return new PagedList<ExpenseView>(pagedData, totalCount, expenseSearch.PageNumber, expenseSearch.PageSize);
 			}
 			catch (Exception ex)
 			{

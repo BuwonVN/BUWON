@@ -19,7 +19,6 @@ namespace BWERP.Models.Exppense
 		[Required(ErrorMessage = "Please enter Amount")]
 		public double Amount { get; set; }
 
-		[Required(ErrorMessage = "Please enter Note")]
-		public string Note { get; set; }
+		public string? Note { get; set; }
 	}
 }

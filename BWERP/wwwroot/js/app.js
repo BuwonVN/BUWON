@@ -8,7 +8,6 @@ window.initializeSidePanel = function () {
     if (sidePanel) {
         function responsiveSidePanel() {
             let w = window.innerWidth;
-            console.log('Window width:', w);
             if (w >= 1200) {
                 sidePanel.classList.remove('sidepanel-hidden');
                 sidePanel.classList.add('sidepanel-visible');

@@ -49,6 +49,18 @@ namespace BWERP.Repositories.Services
 				["pageNumber"] = expenseSearch.PageNumber.ToString()
 			};
 
+			if (expenseSearch.Year.HasValue)
+				queryStringParam.Add("year", expenseSearch.Year.ToString());
+
+			if (expenseSearch.Month.HasValue)
+				queryStringParam.Add("month", expenseSearch.Month.ToString());
+
+			if (!string.IsNullOrEmpty(expenseSearch.CreatedUser))
+				queryStringParam.Add("createduser", expenseSearch.CreatedUser);
+
+			if (expenseSearch.CategoryId.HasValue)
+				queryStringParam.Add("categoryid", expenseSearch.CategoryId.ToString());
+
 			string url = QueryHelpers.AddQueryString($"/api/expenses", queryStringParam);
 
 			var result = await _httpClient.GetFromJsonAsync<PagedList<ExpenseView>>(url);

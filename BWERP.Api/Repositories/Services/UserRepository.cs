@@ -16,7 +16,7 @@ namespace BWERP.Api.Repositories.Services
 	public class UserRepository : IUserRepository
 	{
 		private readonly MainContext _mainContext;
-		//TEST ADO.NET
+		//ADO.NET
 		private readonly IConfiguration _configuration;
 		private readonly string _dbMain;
 		public UserRepository(MainContext mainContext,

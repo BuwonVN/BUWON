@@ -1,6 +1,9 @@
 ﻿@page "/expenses/expensecreate"
+@using BWERP.Repositories.Interfaces;
+
 @inject NavigationManager NavigationManager;
-@inject IToastService toastService
+@inject IToastService toastService;
+@inject IExpenseApiClient expenseApiClient;
 
 <div class="app-content pt-3 p-md-3 p-lg-4">
 	<div class="container-xl">
@@ -14,7 +17,7 @@
 						<div class="mb-3">
 							<label for="ParentId" class="form-label">Category</label>
 							<InputSelect class="form-select" @bind-Value="@expenseCreateDto.CategoryId">
-								<option value="">-- Select Category --</option>
+								<option value="0">-- Select Category --</option>
 								@foreach (var category in expenseCategory)
 								{
 									<option value="@category.Id">@category.Name</option>

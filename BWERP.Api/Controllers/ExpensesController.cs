@@ -3,6 +3,7 @@ using BWERP.Api.Repositories.Interfaces;
 using BWERP.Api.Repositories.Services;
 using BWERP.Models.Exppense;
 using BWERP.Models.Menu;
+using BWERP.Models.SeedWork;
 using BWERP.Models.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -28,10 +29,15 @@ namespace BWERP.Api.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetListExpense(int pageNumber = 1, int pageSize = 10)
+		public async Task<IActionResult> GetListExpense([FromQuery] ExpenseSearch expenseSearch)
 		{
-			var data = await _expenseRepository.GetListExpense(pageNumber, pageSize);
-			return Ok(data);
+			var pagedlist = await _expenseRepository.GetListExpense(expenseSearch);
+			var expenseDto = pagedlist.Items.ToList();
+
+			return Ok(new PagedList<ExpenseView>(expenseDto,
+				pagedlist.MetaData.TotalCount,
+				pagedlist.MetaData.CurrentPage,
+				pagedlist.MetaData.PageSize));
 		}
 		[HttpGet]
 		[Route("{id}")]

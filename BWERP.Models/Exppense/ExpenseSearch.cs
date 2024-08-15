@@ -9,8 +9,9 @@ namespace BWERP.Models.Exppense
 {
     public class ExpenseSearch : PagingParameters
     {
-		public int Year { get; set; }
-		public int Month { get; set; }
+		public int? Year { get; set; }
+		public int? Month { get; set; }
 		public int? CategoryId { get; set; }
+		public string CreatedUser { get; set; }
 	}
 }

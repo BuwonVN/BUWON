@@ -11,6 +11,8 @@ using BWERP.Models.Menu;
 using BWERP.Models.SeedWork;
 using BWERP.Repositories.Services;
 using BWERP.Shared;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 
 namespace BWERP.Pages.Expenses
 {
@@ -29,6 +31,9 @@ namespace BWERP.Pages.Expenses
 		public MetaData MetaData { get; set; } = new MetaData();
 		[CascadingParameter]
 		private Error? _error { get; set; }
+		//DECLARE VARIABLES
+		private double sPayment;
+		private string username;
 		protected override async Task OnInitializedAsync()
 		{
 			// Populate years
@@ -50,6 +55,12 @@ namespace BWERP.Pages.Expenses
 			expenseSearch.Month = DateTime.Now.Month;
 
 			expenseCategory = await expenseApiClient.GetCategory();
+
+			//AUTHORIZE
+			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+			username = authState.User.Identity.Name;
+
+			expenseSearch.CreatedUser = username;
 			await GetListExpense();
 		}
 		//SEARCH DATA
@@ -69,6 +80,8 @@ namespace BWERP.Pages.Expenses
 				var pagingResponse = await expenseApiClient.GetListExpense(expenseSearch);
 				expenseView = pagingResponse.Items;
 				MetaData = pagingResponse.MetaData;
+
+				sPayment = expenseView.Sum(s => s.Amount);
 			}
 			catch (Exception ex)
 			{
@@ -80,6 +93,11 @@ namespace BWERP.Pages.Expenses
 		{
 			expenseSearch.PageNumber = page;
 			await GetListExpense();
+		}
+		private async Task ExportToExcel()
+		{
+			// Call the JavaScript function to export the data
+			await JSRuntime.InvokeVoidAsync("exportDataToExcel", expenseView, "expenses.xlsx");
 		}
 	}
 }
