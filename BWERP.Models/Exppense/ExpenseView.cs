@@ -17,5 +17,6 @@ namespace BWERP.Models.Exppense
 		public string CreatedUser { get; set; }
 		public double Amount { get; set; }
 		public string Note { get; set; }
+		public double TotalAmount { get; set; }
 	}
 }

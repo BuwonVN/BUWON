@@ -123,7 +123,7 @@ namespace BWERP.Pages.DepartmentDailyReport
         {
             ToAddresses = new List<string>
             {
-				"jschoi@buwon.com;chha@buwon.com;hskim@buwon.com;jkkim@buwon.com;cbkim@buwon.com;cblee@buwon.com;skkyong@buwon.com;msyu@buwon.com;ihkim@buwon.com;sjkang@buwon.com;sjlee@buwon.com;mjrbergin@buwon.com;bthien@buwon.com;isyun@buwon.com;jhlim@buwon.com;hdkim@buwon.com"
+				"jschoi@buwon.com;chha@buwon.com;hskim@buwon.com;jkkim@buwon.com;cbkim@buwon.com;cblee@buwon.com;skkyong@buwon.com;msyu@buwon.com;ihkim@buwon.com;sjkang@buwon.com;sjlee@buwon.com;mjrbergin@buwon.com;bthien@buwon.com;jhlim@buwon.com;hdkim@buwon.com"
 				//"bthien@buwon.com"
             },
             CcAddresses = new List<string>

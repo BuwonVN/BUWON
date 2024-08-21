@@ -104,37 +104,47 @@
 							</tr>
 						</thead>
 						<tbody>
-							@foreach (var item in expenseView)
-							{
-								<tr>
-									<td>@item.CategoryName</td>
-									<td>@item.Description</td>
-									<td class="text-center">@item.CreatedDate.ToString("yyyy-MM-dd")</td>
-									<td class="text-end">@string.Format("{0:N0}",@item.Amount) VND</td>
-									<td>@item.Note</td>
-									<td>@item.CreatedUser</td>
-									<td class="text-center">
-										@*<a href="/users/userdetail/@item.Id" class="btn btn-primary">Detail</a>*@
-										<a href="/expenses/expenseedit/@item.Id" class="btn btn-warning">Edit</a>
-										@*<button class="btn btn-danger" @onclick="()=> OnDeleteTask(item.Id)">Delete</button>*@
-									</td>
-								</tr>
+							@{
+								var groupedExpenses = expenseView.GroupBy(x => x.CategoryName);
+								foreach (var group in groupedExpenses)
+								{
+									categorySubtotal = 0;
+									foreach (var item in group)
+									{
+										categorySubtotal += item.Amount;
+										<tr>
+											<td>@item.CategoryName</td>
+											<td>@item.Description</td>
+											<td class="text-center">@item.CreatedDate.ToString("yyyy-MM-dd")</td>
+											<td class="text-end">@string.Format("{0:N0}", @item.Amount) VND</td>
+											<td>@item.Note</td>
+											<td>@item.CreatedUser</td>
+											<td class="text-center">
+												<a href="/expenses/expenseedit/@item.Id" class="btn btn-warning">Edit</a>
+											</td>
+										</tr>
+									}
+									<!-- Subtotal Row -->
+									<tr class="table-light text-end">
+										<th colspan="3" class="text-start">Subtotal for @group.Key</th>
+										<th>@string.Format("{0:N0}", categorySubtotal) VND</th>
+										<th colspan="3"></th>
+									</tr>
+								}
 							}
 						</tbody>
 						<tfoot>
 							<tr class="table-light text-end">
-								<th class="text-start">Total payment</th>
-								<th></th>
-								<th></th>
-								<th>@string.Format("{0:N0}",@sPayment) VND</th>
-								<th></th>
-								<th></th>
-								<th></th>
+								<th colspan="3" class="text-start">Total payment</th>
+								<th>@string.Format("{0:N0}", sPayment) VND</th>
+								<th colspan="3"></th>
+
 							</tr>
 							<Pagination MetaData="MetaData" Spread="2" SelectedPage="SelectedPage"></Pagination>
 						</tfoot>
 					</table>
-				</div><!--//table-responsive-->
+				</div>
+
 			</div><!--//app-card-body-->
 		</div><!--//app-card-->
 	</div>

@@ -27,20 +27,18 @@
 			}, 5000); // 3000 milliseconds = 3 seconds
 		}
 	</script>
-
-	@*Sheet JS Library*@
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+	
+	@*Download Excel File using EPPlus*@
 	<script>
-		function exportDataToExcel(data, fileName) {
-			// Create a new workbook and add a worksheet
-			var workbook = XLSX.utils.book_new();
-			var worksheet = XLSX.utils.json_to_sheet(data);
+		function downloadFile(bytes, fileName, contentType) {
+			const blob = new Blob([new Uint8Array(bytes)], { type: contentType });
+			const url = URL.createObjectURL(blob);
 
-			// Append the worksheet to the workbook
-			XLSX.utils.book_append_sheet(workbook, worksheet, 'Expenses');
-
-			// Generate a file and trigger a download
-			XLSX.writeFile(workbook, fileName);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = fileName;
+			a.click();
+			URL.revokeObjectURL(url);
 		}
 	</script>
 
@@ -56,6 +54,7 @@
 	@*Connect Charts with Blazor*@
 	<script src="_content/ChartJs.Blazor.Fork/ChartJsBlazorInterop.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
 	@*Side Panel*@
 	<script src="~/js/app.js"></script>
 </head>

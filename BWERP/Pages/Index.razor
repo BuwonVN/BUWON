@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using BWERP.Models.Production;
 @using BWERP.Models.WeelkyReport;
 @using BWERP.Repositories.Interfaces;
 @using ChartJs.Blazor.LineChart;
@@ -6,12 +7,57 @@
 @using ChartJs.Blazor.BarChart
 @using ChartJs.Blazor.PolarAreaChart
 
+@inject IProductionApiClient productionApiClient
+@inject IWeeklyReportApiClient weeklyreportApi
+
 <PageTitle>Index</PageTitle>
 <div class="app-content pt-3 p-md-2 p-lg-3">
 	<div class="container-xl">
+		
+		<div class="row g-4 mb-4">
+			<div class="col-6 col-lg-3">
+				<div class="app-card app-card-stat shadow-sm h-100">
+					<div class="app-card-body p-3 p-lg-4">
+						<h4 class="stats-type mb-1">MBCP Production</h4>
+						<div class="stats-figure">Loading...</div>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//col-->
+
+			<div class="col-6 col-lg-3">
+				<div class="app-card app-card-stat shadow-sm h-100">
+					<div class="app-card-body p-3 p-lg-4">
+						<h4 class="stats-type mb-1">Expenses</h4>
+						<div class="stats-figure">Loading...</div>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//col-->
+			<div class="col-6 col-lg-3">
+				<div class="app-card app-card-stat shadow-sm h-100">
+					<div class="app-card-body p-3 p-lg-4">
+						<h4 class="stats-type mb-1">IP Production</h4>
+						<div class="stats-figure">@string.Format("{0:N0}",sumQtyIP)</div>
+						<div class="stats-meta">
+							PRS
+						</div>
+					</div><!--//app-card-body-->
+					<a class="app-card-link-mask" href="#"></a>
+				</div><!--//app-card-->
+			</div><!--//col-->
+			<div class="col-6 col-lg-3">
+				<div class="app-card app-card-stat shadow-sm h-100">
+					<div class="app-card-body p-3 p-lg-4">
+						<h4 class="stats-type mb-1">OS Production</h4>
+						<div class="stats-figure">@string.Format("{0:N0}",sumQtyOS)</div>
+						<div class="stats-meta">PRS</div>
+					</div><!--//app-card-body-->
+				</div><!--//app-card-->
+			</div><!--//col-->
+		</div><!--//row-->
+
+
 		<div class="row g-2 mb-4">
-			
-			<div class="col-12 col-lg-6">
+			@*<div class="col-12 col-lg-6">
 				<div class="app-card app-card-chart h-100 shadow-sm">
 					<div class="app-card-header p-3 border-0">
 						<h4 class="app-card-title">IP Production</h4>
@@ -22,37 +68,26 @@
 						</div>
 					</div><!--//app-card-body-->
 				</div><!--//app-card-->
-			</div><!--//col-->
-			
-			<div class="col-12 col-lg-6">
-				<div class="app-card app-card-chart h-100 shadow-sm">
-					<div class="app-card-header p-3 border-0">
-						<h4 class="app-card-title">OS Production</h4>
-					</div><!--//app-card-header-->
-					<div class="app-card-body p-4">
-						<div class="chart-container">
-							<Chart Config="_osBarConfig"></Chart>
-						</div>
-					</div><!--//app-card-body-->
-				</div><!--//app-card-->
-			</div><!--//col-->
+			</div><!--//col-->*@		
 		</div><!--//row-->
 		<div class="row mb-2">
-			<div class="col-12 col-lg-6">
-				<div class="app-card app-card-chart h-100 shadow-sm">
-					<div class="app-card-header p-3 border-0">
-						<h4 class="app-card-title">Master Batch Production</h4>
-					</div><!--//app-card-header-->
-					<div class="app-card-body p-4">
-						<div class="chart-container">
-							<Chart Config="_mblineConfig"></Chart>
-						</div>
-					</div><!--//app-card-body-->
-				</div><!--//app-card-->
-			</div><!--//col-->
-
 			@if (_outstandingbyweekDtos != null)
 			{
+				<div class="col-12 col-lg-6">
+					<div class="app-card app-card-chart h-100 shadow-sm">
+						<div class="app-card-header p-3 border-0">
+							<h4 class="app-card-title">Master Batch Production</h4>
+						</div><!--//app-card-header-->
+						<div class="app-card-body p-4">
+							<div class="chart-container">
+								<Chart Config="_mblineConfig"></Chart>
+							</div>
+						</div><!--//app-card-body-->
+					</div><!--//app-card-->
+				</div>
+
+				<!--//col-->
+
 				<div class="col-12 col-lg-6">
 					<div class="app-card app-card-chart h-100 shadow-sm">
 						<div class="app-card-body p-4">
@@ -68,12 +103,12 @@
 	</div><!--//container-fluid-->
 </div><!--//app-content-->
 @code {
-
-	[Inject] private IWeeklyReportApiClient weeklyreportApi { get; set; }
 	private List<OutstandingReceivableByWeekDto> _outstandingbyweekDtos;
+	private List<ProductionViewDto> _ipViewDtos = new List<ProductionViewDto>();
+	private List<ProductionViewDto> _osViewDtos = new List<ProductionViewDto>();
 
 	private PieConfig _config;
-	private BarConfig _ipBarConfig, _osBarConfig;
+	private BarConfig _ipBarConfig;
 	private PolarAreaConfig _polarConfig;
 	private LineConfig _mblineConfig;
 	private LineConfig _outstandinglineConfig;
@@ -81,26 +116,33 @@
 	[CascadingParameter]
 	private Error? _error { get; set; }
 
+	private double sumQtyOS, sumQtyIP;
+
 	protected override async Task OnInitializedAsync()
 	{
-		Load_OSProduction();
-		Load_IPProduction();
-		Load_MBProduction();
-		await GetOutstandingReceivableByWeek();
+		await LoadData();
 	}
-	//
-	private async Task GetOutstandingReceivableByWeek()
+
+	private async Task LoadData()
 	{
 		try
 		{
+			_ipViewDtos = await productionApiClient.GetProductionStatus_Dashboard("590", DateTime.Now.Date);
+			sumQtyIP = _ipViewDtos.Sum(s => s.ProdQty);
+
+			_osViewDtos = await productionApiClient.GetProductionStatus_Dashboard("510", DateTime.Now.Date);
+			sumQtyOS = _osViewDtos.Sum(s => s.ProdQty);
+
 			_outstandingbyweekDtos = await weeklyreportApi.GetOutstandingReceivableByWeek(DateTime.Now.Year, DateTime.Now.Month);
 			LoadOutstandingLineChart(_outstandingbyweekDtos);
+			Load_MBProduction();
 		}
 		catch (Exception ex)
 		{
 			_error.ProcessError(ex);
 		}
 	}
+
 
 	private void LoadOutstandingLineChart(List<OutstandingReceivableByWeekDto> _outstandingweekly)
 	{
@@ -155,7 +197,7 @@
 			_mblineConfig.Data.Labels.Add(months);
 		}
 		var dataValues1 = new[] { 515390, 640065, 988650, 748175, 788840, 964471, 927705, 833812, 834985, 913480, 1008645, 952630 };
-		var dataValues2 = new[] { 1085415, 652805, 1133349, 945685, 1014330, 1027265, 0, 0, 0, 0, 0, 0 };
+		var dataValues2 = new[] { 1085415, 652805, 1133349, 945685, 1014330, 1027265, 1122020, 0, 0, 0, 0, 0 };
 
 		LineDataset<int> dataset1 = new LineDataset<int>(dataValues1)
 			{
@@ -209,54 +251,6 @@
 			};
 
 		_config.Data.Datasets.Add(dataset);
-	}
-	private void Load_OSProduction()
-	{
-		// Initialize _barConfig with BarOptions and BarData
-		_osBarConfig = new BarConfig
-			{
-				Options = new BarOptions
-				{
-					Responsive = true,
-					Title = new OptionsTitle
-					{
-						Display = false,
-						Text = "The Comparison between 2023 and 2024"
-					}
-				}
-			};
-
-		// Define the array of month names
-		foreach (string months in new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Otc", "Nov", "Dec" })
-		{
-			_osBarConfig.Data.Labels.Add(months);
-		}
-
-		// Define the first dataset values and background colors
-		int[] dataValues1 = { 364907, 408632, 471211, 527976, 532137, 496501, 535345, 480442, 458842, 538804, 519294, 568368 };
-		string[] backgroundColors1 = Enumerable.Repeat(ColorUtil.ColorHexString(75, 192, 192), dataValues1.Length).ToArray();
-
-		// Create the first BarDataset with the data values and background colors
-		BarDataset<int> dataset1 = new BarDataset<int>(dataValues1)
-			{
-				BackgroundColor = backgroundColors1,
-				Label = "2023"
-			};
-
-		// Define the second dataset values and background colors
-		int[] dataValues2 = { 678110, 384502, 574234, 588524, 677921, 594924, 0, 0, 0, 0, 0, 0 };
-		string[] backgroundColors2 = Enumerable.Repeat(ColorUtil.ColorHexString(54, 162, 235), dataValues2.Length).ToArray();
-
-		// Create the second BarDataset with the data values and background colors
-		BarDataset<int> dataset2 = new BarDataset<int>(dataValues2)
-			{
-				BackgroundColor = backgroundColors2,
-				Label = "2024"
-			};
-
-		// Add both datasets to the Data property
-		_osBarConfig.Data.Datasets.Add(dataset1);
-		_osBarConfig.Data.Datasets.Add(dataset2);
 	}
 
 	private void Load_IPProduction()

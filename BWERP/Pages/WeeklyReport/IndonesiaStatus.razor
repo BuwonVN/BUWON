@@ -4,11 +4,7 @@
 @using BWERP.Repositories.Interfaces;
 @using System.Text.RegularExpressions;
 
-@if (commentView == null)
-{
-	<LoadingIndicator></LoadingIndicator>
-}
-else
+@if (commentView != null)
 {
 	<div class="col-12 mt-2">
 		<div class="row mb-2" style="font-size:1.17em">
@@ -37,11 +33,19 @@ else
 						<div class="row">
 							@(new MarkupString(commentView2.Content))
 						</div>
+						<div class="row">
+							@(new MarkupString(commentView3.Content))
+						</div>
 					</div>
 				</div>
 			</div><!--//app-card-body-->
 		</div><!--//app-card-->
 	</div>
+
+}
+else
+{
+	<LoadingIndicator></LoadingIndicator>
 }
 
 @code {
@@ -53,23 +57,40 @@ else
 
 	private CommentViewRequest commentView { set; get; }
 	private CommentViewRequest commentView2 { set; get; }
+	private CommentViewRequest commentView3 { set; get; }
 
 	protected override async Task OnInitializedAsync()
 	{
 		try
 		{
-			commentView = await commentApi.GetCommentByDeptId(12);
-			commentView2 = await commentApi.GetCommentByDeptId(13);
+			// Start all tasks concurrently
+			var task1 = commentApi.GetCommentByDeptId(12);
+			var task2 = commentApi.GetCommentByDeptId(13);
+			var task3 = commentApi.GetCommentByDeptId(14);
 
+			// Await all tasks
+			var results = await Task.WhenAll(task1, task2, task3);
+
+			// Assign results to variables
+			commentView = results[0];
+			commentView2 = results[1];
+			commentView3 = results[2];
+
+			// Apply the Regex replacements
 			string pattern = @"<thead(?![^>]*\bclass\b)";
 			string replacement = "<thead class=\"table-grey\"";
-			commentView.Content = Regex.Replace(commentView.Content, pattern, replacement);
 
-			commentView2.Content = Regex.Replace(commentView2.Content, pattern, replacement);
+			commentView.Content = ApplyRegexReplacement(commentView.Content, pattern, replacement);
+			commentView2.Content = ApplyRegexReplacement(commentView2.Content, pattern, replacement);
+			commentView3.Content = ApplyRegexReplacement(commentView3.Content, pattern, replacement);
 		}
 		catch (Exception ex)
 		{
 			toastService.ShowInfo($"No data found.");
 		}
+	}
+	private string ApplyRegexReplacement(string content, string pattern, string replacement)
+	{
+		return Regex.Replace(content, pattern, replacement);
 	}
 }

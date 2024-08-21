@@ -1,6 +1,7 @@
 ﻿using BWERP.Models.ExpenseCategory;
 using BWERP.Models.Exppense;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace BWERP.Pages.Expenses
@@ -9,11 +10,19 @@ namespace BWERP.Pages.Expenses
 	{
 		private ExpenseCreateDto expenseCreateDto = new ExpenseCreateDto();
 		private List<ExpenseCategoryView> expenseCategory = new List<ExpenseCategoryView>();
+		//VARIALES
+		private string username;
 
 		protected override async Task OnInitializedAsync()
 		{
 			expenseCategory = await expenseApiClient.GetCategory();
 			expenseCreateDto.CreatedDate= DateTime.Now;
+
+			//AUTHORIZE
+			var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+			username = authState.User.Identity.Name;
+
+			expenseCreateDto.CreatedUser = username;
 		}
 		private async Task SubmitTask(EditContext context)
 		{
