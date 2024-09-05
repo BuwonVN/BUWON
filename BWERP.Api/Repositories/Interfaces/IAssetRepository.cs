@@ -8,7 +8,7 @@ namespace BWERP.Api.Repositories.Interfaces
     {
 		Task<List<AssetCategoryView>> GetAssetCategory();
 		Task<PagedList<AssetView>> GetListAsset(AssetSearch assetSearch);
-		Task<Asset> GetAssetById(int id);
+		Task<Asset> GetAssetById(string id);
 		Task<Asset> Create(Asset asset);
 		Task<Asset> Update(Asset asset);
 	}

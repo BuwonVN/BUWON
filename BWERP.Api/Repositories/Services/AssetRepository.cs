@@ -2,6 +2,7 @@
 using BWERP.Models.Asset;
 using BWERP.Models.AssetCategory;
 using BWERP.Models.ExpenseCategory;
+using BWERP.Models.Exppense;
 using BWERP.Models.SeedWork;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -48,16 +49,24 @@ namespace BWERP.Api.Repositories.Services
 			return asset;
 		}
 
-		public Task<Asset> GetAssetById(int id)
+		public async Task<Asset> GetAssetById(string id)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				string query = "SELECT * FROM Assets WHERE Id = @Id";
+				return await sqlconMain.QueryFirstOrDefaultAsync<Asset>(query, new { Id = id });
+			}
+			catch
+			{
+				throw;
+			}
 		}
 
 		public async Task<List<AssetCategoryView>> GetAssetCategory()
 		{
 			try
 			{
-				var query = "select ID, Name from AssetCategories";
+				var query = "select Id, Code, Name from AssetCategories";
 				var data = await sqlconMain.QueryAsync<AssetCategoryView>(query);
 				return data.ToList();
 			}
@@ -67,28 +76,47 @@ namespace BWERP.Api.Repositories.Services
 			}
 		}
 
-		public Task<PagedList<AssetView>> GetListAsset(AssetSearch assetSearch)
+		public async Task<PagedList<AssetView>> GetListAsset(AssetSearch assetSearch)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var parameters = new
+				{
+					assetSearch.Name,
+					assetSearch.Location,
+					CategoryId = (object)assetSearch.CategoryId ?? DBNull.Value,
+					StatusId = (object)assetSearch.StatusId ?? DBNull.Value
+				};
+				var data = await sqlconMain.QueryAsync<AssetView>("spAssetGetAll", parameters, commandType: CommandType.StoredProcedure);
+
+				var pagedData = data.Skip((assetSearch.PageNumber - 1) * assetSearch.PageSize).Take(assetSearch.PageSize).ToList();
+				var totalCount = data.Count();
+
+				return new PagedList<AssetView>(pagedData, totalCount, assetSearch.PageNumber, assetSearch.PageSize);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
 		}
 
 		public async Task<Asset> Update(Asset asset)
 		{
 			try
 			{
-				string updateSql = @"UPDATE Expenses SET Name=@Name, CategoryId=@CategoryId, Location=@Location, StatusId=@StatusId, Description=@Description, PurchasePrice=@PurchasePrice, PurchaseDate=@PurchaseDate, AssignedTo=@AssignedTo
+				string updateSql = @"UPDATE Assets SET Name=@Name, CategoryId=@CategoryId, Location=@Location, StatusId=@StatusId, Description=@Description, PurchasePrice=@PurchasePrice, PurchaseDate=@PurchaseDate, AssignedTo=@AssignedTo
                              WHERE Id=@Id";
 
 				await sqlconMain.ExecuteAsync(updateSql, new
 				{
 					asset.Id,
-					asset.CategoryId,
 					asset.Name,
+					asset.CategoryId,
 					asset.Location,
 					asset.StatusId,
 					asset.Description,
-					asset.PurchaseDate,
 					asset.PurChasePrice,
+					asset.PurchaseDate,
 					asset.AssignedTo
 				});
 			}
