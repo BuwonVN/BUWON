@@ -65,6 +65,7 @@ namespace BWERP.Pages.Users
 			DeleteId = deleteId;
 			DeleteConfirmation.Show();
 		}
+
 		public async Task OnConfirmDeleteTask(bool deleteConfirmed)
 		{
 			if (deleteConfirmed)

@@ -86,7 +86,7 @@ else
 									<tr>
 										<td>@item.Username</td>
 										<td>@item.LastName @item.FirstName</td>
-										<td></td>
+										<td><a style="cursor:pointer;" @onclick="()=>OpenAssignPopup(item.Id)">@item.RoleId</a></td>
 										<td class="text-center">@item.CreatedDate</td>
 										<td class="text-center">@item.lastLogin</td>
 										<td class="text-center">@item.isActive</td>

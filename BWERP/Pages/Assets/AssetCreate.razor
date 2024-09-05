@@ -1,0 +1,45 @@
+﻿@page "/assets/assetcreate"
+
+@inject IToastService toastService
+
+<div class="app-content pt-3 p-md-3 p-lg-4">
+	<div class="container-xl">
+		<h1 class="app-page-title">Add New Asset</h1>
+		<hr class="mb-4">
+		<div class="row g-4 settings-section">
+			<div class="app-card app-card-settings shadow-sm p-4">
+				<div class="app-card-body">
+					<EditForm Model="assetCreateDto" OnValidSubmit="SubmitTask">
+						<DataAnnotationsValidator />
+						<div class="mb-3">
+							<label for="ParentId" class="form-label">Category</label>
+							
+						</div>
+
+						<div class="mb-3">
+							<label for="Name" class="form-label">Description</label>
+						
+						</div>
+						<div class="mb-3">
+							<label for="Description" class="form-label">Date</label>
+							
+						</div>
+
+						<div class="mb-3">
+							<label for="Icon" class="form-label">Amount</label>
+							
+						</div>
+						<div class="mb-3">
+							<label for="IconPath" class="form-label">Remark</label>
+							
+						</div>
+
+						<button type="submit" class="btn app-btn-primary">Save Changes</button>
+						<a class="btn app-btn-secondary" href="/expenses/expenselist">Cancel</a>
+					</EditForm>
+				</div><!--//app-card-body-->
+			</div><!--//app-card-->
+		</div><!--//row-->
+	</div><!--//container-fluid-->
+</div>
+<!--//app-content-->

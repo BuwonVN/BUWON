@@ -39,6 +39,12 @@ namespace BWERP.Api.Controllers
 				pagedlist.MetaData.CurrentPage,
 				pagedlist.MetaData.PageSize));
 		}
+		[HttpGet("nopaging")]
+		public async Task<IActionResult> GetListExpenseNoPaging([FromQuery] ExpenseSearch expenseSearch)
+		{
+			var data = await _expenseRepository.GetListExpenseNoPaging(expenseSearch);
+			return Ok(data);
+		}
 		[HttpGet]
 		[Route("{id}")]
 		public async Task<IActionResult> GetById(int id)

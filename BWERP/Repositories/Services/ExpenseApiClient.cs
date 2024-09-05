@@ -66,5 +66,30 @@ namespace BWERP.Repositories.Services
 			var result = await _httpClient.GetFromJsonAsync<PagedList<ExpenseView>>(url);
 			return result;
 		}
+
+		public async Task<List<ExpenseView>> GetListExpenseNoPaging(ExpenseSearch expenseSearch)
+		{
+			var queryStringParam = new Dictionary<string, string>
+			{
+				["pageNumber"] = expenseSearch.PageNumber.ToString()
+			};
+
+			if (expenseSearch.Year.HasValue)
+				queryStringParam.Add("year", expenseSearch.Year.ToString());
+
+			if (expenseSearch.Month.HasValue)
+				queryStringParam.Add("month", expenseSearch.Month.ToString());
+
+			if (!string.IsNullOrEmpty(expenseSearch.CreatedUser))
+				queryStringParam.Add("createduser", expenseSearch.CreatedUser);
+
+			if (expenseSearch.CategoryId.HasValue)
+				queryStringParam.Add("categoryid", expenseSearch.CategoryId.ToString());
+
+			string url = QueryHelpers.AddQueryString($"/api/expenses/nopaging", queryStringParam);
+
+			var result = await _httpClient.GetFromJsonAsync<List<ExpenseView>>(url);
+			return result;
+		}
 	}
 }

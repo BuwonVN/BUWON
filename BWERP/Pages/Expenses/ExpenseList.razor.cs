@@ -1,27 +1,23 @@
-﻿using Blazored.Toast.Services;
+﻿using BWERP.Models.ExpenseCategory;
 using BWERP.Models.Exppense;
-using BWERP.Models.User;
-using Microsoft.AspNetCore.Components.Forms;
-using static BWERP.Pages.Components.SearchByMonth;
-using System.Globalization;
-using BWERP.Models.ExpenseCategory;
-using Microsoft.AspNetCore.Components;
-using BWERP.Repositories.Interfaces;
-using BWERP.Models.Menu;
 using BWERP.Models.SeedWork;
-using BWERP.Repositories.Services;
+using BWERP.Repositories.Interfaces;
 using BWERP.Shared;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
-using OfficeOpenXml.Style;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using System.Globalization;
 
 namespace BWERP.Pages.Expenses
 {
-    public partial class ExpenseList
+	public partial class ExpenseList
     {
         private ExpenseSearch expenseSearch = new ExpenseSearch();
         private List<ExpenseView> expenseView = new List<ExpenseView>();
+		private List<ExpenseView> expenseNoPaging = new List<ExpenseView>();
 		private List<ExpenseCategoryView> expenseCategory = new List<ExpenseCategoryView>();
 
 		private List<int> years = new List<int>();
@@ -78,6 +74,10 @@ namespace BWERP.Pages.Expenses
 		{
 			try
 			{
+				//GET EXPENSES WITHOUT PAGING
+				expenseNoPaging = await expenseApiClient.GetListExpenseNoPaging(expenseSearch);
+
+				//GET EXPENSES WITH PAGING
 				var pagingResponse = await expenseApiClient.GetListExpense(expenseSearch);
 				expenseView = pagingResponse.Items;
 				MetaData = pagingResponse.MetaData;
@@ -129,11 +129,14 @@ namespace BWERP.Pages.Expenses
 				}
 
 				int row = 2;
-				var groupedExpenses = expenseView.GroupBy(x => x.CategoryName);
+				double grandTotal = 0;
+				var groupedExpenses = expenseNoPaging.GroupBy(x => x.CategoryName);
 
 				foreach (var group in groupedExpenses)
 				{
 					double categorySubtotal = 0;
+					int groupStartRow = row; // Track the start row for the current category group
+
 					foreach (var item in group)
 					{
 						worksheet.Cells[row, 1].Value = item.CategoryName;
@@ -147,6 +150,12 @@ namespace BWERP.Pages.Expenses
 						categorySubtotal += item.Amount;
 						row++;
 					}
+					// Merge Category cells for this group
+					if (group.Count() > 1) // Only merge if there's more than one row in the group
+					{
+						worksheet.Cells[groupStartRow, 1, row - 1, 1].Merge = true;
+						worksheet.Cells[groupStartRow, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+					}
 
 					// Add Subtotal row
 					worksheet.Cells[row, 1, row, 3].Merge = true;
@@ -156,7 +165,30 @@ namespace BWERP.Pages.Expenses
 					worksheet.Cells[row, 4].Value = categorySubtotal;
 					worksheet.Cells[row, 4].Style.Numberformat.Format = "#,##0";
 					worksheet.Cells[row, 4].Style.Font.Bold = true;
+
+					// Apply background color to the subtotal row
+					using (var range = worksheet.Cells[row, 1, row, 6])
+					{
+						range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+						range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+					}
+
+					grandTotal += categorySubtotal;
 					row++;
+				}
+				// Add Total row at the end
+				worksheet.Cells[row, 1, row, 3].Merge = true;
+				worksheet.Cells[row, 1].Value = "Total";
+				worksheet.Cells[row, 1].Style.Font.Bold = true;
+				worksheet.Cells[row, 4].Value = grandTotal;
+				worksheet.Cells[row, 4].Style.Numberformat.Format = "#,##0";
+				worksheet.Cells[row, 4].Style.Font.Bold = true;
+
+				// Apply background color to the Total row
+				using (var range = worksheet.Cells[row, 1, row, 6])
+				{
+					range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+					range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
 				}
 
 				worksheet.Cells.AutoFitColumns();

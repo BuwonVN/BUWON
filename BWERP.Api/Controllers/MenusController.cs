@@ -96,7 +96,8 @@ namespace BWERP.Api.Controllers
                 Url = request.Url,
                 SortOrder = request.SortOrder,
                 Icon= request.Icon,
-                IconPath = request.IconPath
+                IconPath = request.IconPath,
+                isEnable = 1
             });
             return Ok();
         }

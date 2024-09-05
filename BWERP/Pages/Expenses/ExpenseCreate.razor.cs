@@ -33,7 +33,7 @@ namespace BWERP.Pages.Expenses
 				return;
 			}
 
-			expenseCreateDto.CreatedUser = "admin";
+			expenseCreateDto.CreatedUser = username;
 			var result = await expenseApiClient.CreateExpense(expenseCreateDto);
 			if (result)
 			{

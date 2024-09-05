@@ -100,6 +100,27 @@ namespace BWERP.Api.Repositories.Services
 			}
 		}
 
+		public async Task<List<ExpenseView>> GetListExpenseNoPaging(ExpenseSearch expenseSearch)
+		{
+			try
+			{
+				var parameters = new
+				{
+					expenseSearch.Year,
+					expenseSearch.Month,
+					expenseSearch.CreatedUser,
+					CategoryId = (object)expenseSearch.CategoryId ?? DBNull.Value
+				};
+				var data = await sqlconMain.QueryAsync<ExpenseView>("spExpenseGetAll", parameters, commandType: CommandType.StoredProcedure);
+				return data.ToList();
+				
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+
 		public async Task<Expense> Update(Expense exp)
 		{
 			try

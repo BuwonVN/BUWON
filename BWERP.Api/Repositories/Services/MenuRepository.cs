@@ -67,7 +67,7 @@ namespace BWERP.Api.Repositories.Services
                         join rolemenu in _mainContext.AppRoleMenus on menu.Id equals rolemenu.MenuId
                         join userrole in _mainContext.UserRoles on rolemenu.RoleId equals userrole.RoleId
                         join user in _mainContext.Users on userrole.UserId equals user.Id
-                        where user.UserName == username
+                        where user.UserName == username && menu.isEnable == 1
                         select menu;
             return await query.Select(x => new MenuViewRequest()
             {

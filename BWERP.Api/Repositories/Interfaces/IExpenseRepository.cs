@@ -10,6 +10,7 @@ namespace BWERP.Api.Repositories.Interfaces
 	{
 		Task<List<ExpenseCategoryView>> GetExpenseCategory();
 		Task<PagedList<ExpenseView>> GetListExpense(ExpenseSearch expenseSearch);
+		Task<List<ExpenseView>> GetListExpenseNoPaging(ExpenseSearch expenseSearch);
 		Task<Expense> GetExpenseById(int id);
 		Task<Expense> Create(Expense user);
 		Task<Expense> Update(Expense user);
