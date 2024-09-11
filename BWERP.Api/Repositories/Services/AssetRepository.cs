@@ -24,8 +24,8 @@ namespace BWERP.Api.Repositories.Services
 		{
 			try
 			{
-				string insertSql = @"INSERT INTO Assets(Id, Name, CategoryId, Location, StatusId, Description, PurchaseDate, PurchasePrice, AssignedTo) 
-                             VALUES(@Id, @Name, @CategoryId, @Location, @StatusId, @Description, @PurchaseDate, @PurchasePrice, @AssignedTo)";
+				string insertSql = @"INSERT INTO Assets(Id, Name, CategoryId, Location, StatusId, Description, PurchaseDate, PurchasePrice, AssignedTo, CreatedDate, CreatedUser) 
+                             VALUES(@Id, @Name, @CategoryId, @Location, @StatusId, @Description, @PurchaseDate, @PurchasePrice, @AssignedTo, @CreatedDate, @CreatedUser)";
 
 				await sqlconMain.ExecuteAsync(insertSql, new
 				{
@@ -37,7 +37,9 @@ namespace BWERP.Api.Repositories.Services
 					asset.Description,
 					asset.PurchaseDate,
 					asset.PurChasePrice,
-					asset.AssignedTo
+					asset.AssignedTo,
+					asset.CreatedDate,
+					asset.CreatedUser
 				});
 			}
 			catch (Exception ex)
@@ -47,6 +49,20 @@ namespace BWERP.Api.Repositories.Services
 			}
 
 			return asset;
+		}
+
+		public async Task<List<AssetView>> GetAssetAll()
+		{
+			try
+			{
+				var query = "select Id, Name, CategoryId, Location, StatusId, Description, PurchaseDate, PurchasePrice, AssignedTo from Assets";
+				var data = await sqlconMain.QueryAsync<AssetView>(query);
+				return data.ToList();
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
 		}
 
 		public async Task<Asset> GetAssetById(string id)
@@ -68,6 +84,20 @@ namespace BWERP.Api.Repositories.Services
 			{
 				var query = "select Id, Code, Name from AssetCategories";
 				var data = await sqlconMain.QueryAsync<AssetCategoryView>(query);
+				return data.ToList();
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+
+		public async Task<List<AssetStatus>> GetAssetStatus()
+		{
+			try
+			{
+				var query = "select Id, Name from AssetStatus";
+				var data = await sqlconMain.QueryAsync<AssetStatus>(query);
 				return data.ToList();
 			}
 			catch (Exception ex)

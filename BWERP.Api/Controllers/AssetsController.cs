@@ -23,7 +23,18 @@ namespace BWERP.Api.Controllers
 			var result = await _assetRepository.GetAssetCategory();
 			return Ok(result);
 		}
-
+		[HttpGet("status")]
+		public async Task<IActionResult> GetAssetStatus()
+		{
+			var result = await _assetRepository.GetAssetStatus();
+			return Ok(result);
+		}
+		[HttpGet("all")]
+		public async Task<IActionResult> GetAssetAll()
+		{
+			var result = await _assetRepository.GetAssetAll();
+			return Ok(result);
+		}
 		[HttpGet]
 		public async Task<IActionResult> GetListExpense([FromQuery] AssetSearch assetSearch)
 		{
@@ -54,7 +65,9 @@ namespace BWERP.Api.Controllers
 				Description = request.Description,
 				PurchaseDate = request.PurchaseDate,
 				PurChasePrice = request.PurChasePrice,
-				AssignedTo = request.AssignedTo
+				AssignedTo = request.AssignedTo,
+				CreatedDate = request.CreatedDate,
+				CreatedUser = request.CreatedUser
 			});
 			return Ok();
 		}

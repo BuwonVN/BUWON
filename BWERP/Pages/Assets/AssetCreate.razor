@@ -1,6 +1,10 @@
 ﻿@page "/assets/assetcreate"
+@using BWERP.Repositories.Interfaces
 
+@inject IAssetApiClient assetApiClient
 @inject IToastService toastService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager;
 
 <div class="app-content pt-3 p-md-3 p-lg-4">
 	<div class="container-xl">
@@ -12,30 +16,61 @@
 					<EditForm Model="assetCreateDto" OnValidSubmit="SubmitTask">
 						<DataAnnotationsValidator />
 						<div class="mb-3">
-							<label for="ParentId" class="form-label">Category</label>
-							
+							<label for="ParentId" class="form-label">Name</label>
+							<InputText class="form-control" @bind-Value="assetCreateDto.Name"></InputText>
+							<ValidationMessage For="()=>assetCreateDto.Name"></ValidationMessage>
 						</div>
 
 						<div class="mb-3">
-							<label for="Name" class="form-label">Description</label>
-						
+							<label for="Name" class="form-label">Caretory</label>
+							<InputSelect class="form-select" @bind-Value="@assetCreateDto.CategoryId">
+								<option value="0">-- Select Category --</option>
+								@foreach (var category in assetCategories)
+								{
+									<option value="@category.Id">@category.Name</option>
+								}
+							</InputSelect>
+							<ValidationMessage For="()=>assetCreateDto.CategoryId"></ValidationMessage>
 						</div>
 						<div class="mb-3">
-							<label for="Description" class="form-label">Date</label>
-							
+							<label for="Description" class="form-label">Location</label>
+							<InputText class="form-control" @bind-Value="assetCreateDto.Location"></InputText>
+							<ValidationMessage For="()=>assetCreateDto.Location"></ValidationMessage>
 						</div>
 
 						<div class="mb-3">
-							<label for="Icon" class="form-label">Amount</label>
-							
+							<label for="Icon" class="form-label">Status</label>
+							<InputSelect class="form-select" @bind-Value="@assetCreateDto.StatusId">
+								<option value="0">-- Select Status --</option>
+								@foreach (var status in assetStatuses)
+								{
+									<option value="@status.Id">@status.Name</option>
+								}
+							</InputSelect>
+							<ValidationMessage For="()=>assetCreateDto.StatusId"></ValidationMessage>
 						</div>
 						<div class="mb-3">
-							<label for="IconPath" class="form-label">Remark</label>
-							
+							<label for="IconPath" class="form-label">Description</label>
+							<InputText class="form-control" @bind-Value="assetCreateDto.Description"></InputText>
+							<ValidationMessage For="()=>assetCreateDto.Description"></ValidationMessage>
 						</div>
-
+						<div class="mb-3">
+							<label for="IconPath" class="form-label">Purchase Date</label>
+							<InputDate class="form-control" @bind-Value="assetCreateDto.PurchaseDate"></InputDate>
+							<ValidationMessage For="()=>assetCreateDto.PurchaseDate"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="IconPath" class="form-label">Purchase Price</label>
+							<InputNumber class="form-control" @bind-Value="assetCreateDto.PurChasePrice"></InputNumber>
+							<ValidationMessage For="()=>assetCreateDto.PurChasePrice"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="IconPath" class="form-label">Assigned To</label>
+							<InputText class="form-control" @bind-Value="assetCreateDto.AssignedTo"></InputText>
+							<ValidationMessage For="()=>assetCreateDto.AssignedTo"></ValidationMessage>
+						</div>
 						<button type="submit" class="btn app-btn-primary">Save Changes</button>
-						<a class="btn app-btn-secondary" href="/expenses/expenselist">Cancel</a>
+						<a class="btn app-btn-secondary" href="/assets/assetlist">Cancel</a>
 					</EditForm>
 				</div><!--//app-card-body-->
 			</div><!--//app-card-->

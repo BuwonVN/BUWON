@@ -23,6 +23,7 @@ builder.Services.AddHostedService<ScheduledTaskService>();
 
 builder.Services.AddTransient<ITaskApiClient, TaskApiClient>();
 builder.Services.AddTransient<IExpenseApiClient, ExpenseApiClient>();
+builder.Services.AddTransient<IAssetApiClient, AssetApiClient>();
 builder.Services.AddTransient<IUserApiClient, UserApiClient>();
 builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
 builder.Services.AddTransient<IMenuApiClient, MenuApiClient>();

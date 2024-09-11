@@ -1,6 +1,8 @@
-﻿using Blazored.Toast.Services;
-using BWERP.Models.Asset;
-using BWERP.Models.Exppense;
+﻿using BWERP.Models.Asset;
+using BWERP.Models.AssetCategory;
+using BWERP.Models.SeedWork;
+using BWERP.Shared;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace BWERP.Pages.Assets
@@ -9,11 +11,32 @@ namespace BWERP.Pages.Assets
 	{
 		private AssetSearch assetSearch = new AssetSearch();
 		private List<AssetView> assetView = new List<AssetView>();
+		private List<AssetCategoryView> assetCategories = new List<AssetCategoryView>();
 
+		public MetaData MetaData { get; set; } = new MetaData();
+		[CascadingParameter]
+		private Error? _error { get; set; }
+
+		protected override async Task OnInitializedAsync()
+		{
+			assetCategories = await assetApiClient.GetCategory();
+			await GetListAsset();
+		}
+		//GET DATA
 		private async Task GetListAsset()
 		{
-
+			try
+			{
+				var pagingResponse = await assetApiClient.GetListAsset(assetSearch);
+				assetView = pagingResponse.Items;
+				MetaData = pagingResponse.MetaData;
+			}
+			catch (Exception ex)
+			{
+				_error.ProcessError(ex);
+			}
 		}
+
 		//SEARCH DATA
 		private async Task SearchForm(EditContext editContext)
 		{

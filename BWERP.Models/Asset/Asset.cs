@@ -17,5 +17,7 @@ namespace BWERP.Models.Asset
 		public double PurChasePrice { get; set; }
 		public DateTime PurchaseDate { get; set; }
 		public string AssignedTo { get; set; }
+		public DateTime CreatedDate { get; set; }
+		public string CreatedUser { get; set; }
 	}
 }
