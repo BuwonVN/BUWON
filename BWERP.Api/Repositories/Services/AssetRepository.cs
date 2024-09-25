@@ -1,8 +1,8 @@
 ﻿using BWERP.Api.Repositories.Interfaces;
 using BWERP.Models.Asset;
 using BWERP.Models.AssetCategory;
-using BWERP.Models.ExpenseCategory;
-using BWERP.Models.Exppense;
+using BWERP.Models.AssetHistory;
+using BWERP.Models.Comment;
 using BWERP.Models.SeedWork;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -24,22 +24,48 @@ namespace BWERP.Api.Repositories.Services
 		{
 			try
 			{
-				string insertSql = @"INSERT INTO Assets(Id, Name, CategoryId, Location, StatusId, Description, PurchaseDate, PurchasePrice, AssignedTo, CreatedDate, CreatedUser) 
-                             VALUES(@Id, @Name, @CategoryId, @Location, @StatusId, @Description, @PurchaseDate, @PurchasePrice, @AssignedTo, @CreatedDate, @CreatedUser)";
+				string insertSql = @"INSERT INTO Assets(Id, Name, SerialNo, CategoryId, Location, StatusId, Description, PurchaseDate, PurchasePrice, AssignedTo, CreatedDate, CreatedUser) 
+                             VALUES(@Id, @Name, @SerialNo, @CategoryId, @Location, @StatusId, @Description, @PurchaseDate, @PurchasePrice, @AssignedTo, @CreatedDate, @CreatedUser)";
 
 				await sqlconMain.ExecuteAsync(insertSql, new
 				{
 					asset.Id,
 					asset.Name,
+					asset.SerialNo,
 					asset.CategoryId,
 					asset.Location,
 					asset.StatusId,
 					asset.Description,
 					asset.PurchaseDate,
-					asset.PurChasePrice,
+					asset.PurchasePrice,
 					asset.AssignedTo,
 					asset.CreatedDate,
 					asset.CreatedUser
+				});
+			}
+			catch (Exception ex)
+			{
+				//This preserves the original stack trace.
+				throw;
+			}
+
+			return asset;
+		}
+
+		public async Task<AssetHistory> CreateHistory(AssetHistory asset)
+		{
+			try
+			{
+				string insertSql = @"INSERT INTO AssetHistory(AssetId, Description, Date, Event)
+                             VALUES(@AssetId, @Description, @Date, @Event)";
+
+				await sqlconMain.ExecuteAsync(insertSql, new
+				{
+					asset.Id,
+					asset.AssetId,
+					asset.Description,
+					asset.Date,
+					asset.Event
 				});
 			}
 			catch (Exception ex)
@@ -55,7 +81,7 @@ namespace BWERP.Api.Repositories.Services
 		{
 			try
 			{
-				var query = "select Id, Name, CategoryId, Location, StatusId, Description, PurchaseDate, PurchasePrice, AssignedTo from Assets";
+				var query = "select Id, Name,SerialNo, CategoryId, Location, StatusId, Description, PurchaseDate, PurchasePrice, AssignedTo from Assets";
 				var data = await sqlconMain.QueryAsync<AssetView>(query);
 				return data.ToList();
 			}
@@ -65,7 +91,7 @@ namespace BWERP.Api.Repositories.Services
 			}
 		}
 
-		public async Task<Asset> GetAssetById(string id)
+		public async Task<Asset>  GetAssetById(string id)
 		{
 			try
 			{
@@ -85,6 +111,25 @@ namespace BWERP.Api.Repositories.Services
 				var query = "select Id, Code, Name from AssetCategories";
 				var data = await sqlconMain.QueryAsync<AssetCategoryView>(query);
 				return data.ToList();
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+		//GET HISTORY
+		public async Task<PagedList<AssetHistoryView>> GetAssetHistory(int pageNumber, int pageSize)
+		{
+			try
+			{
+				var query = @"select Id, AssetId, Description, Date, Event from AssetHistory order by Date desc";
+
+				var data = await sqlconMain.QueryAsync<AssetHistoryView>(query);
+
+				var pagedData = data.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+				var totalCount = data.Count();
+
+				return new PagedList<AssetHistoryView>(pagedData, totalCount, pageNumber, pageSize);
 			}
 			catch (Exception ex)
 			{
@@ -134,18 +179,18 @@ namespace BWERP.Api.Repositories.Services
 		{
 			try
 			{
-				string updateSql = @"UPDATE Assets SET Name=@Name, CategoryId=@CategoryId, Location=@Location, StatusId=@StatusId, Description=@Description, PurchasePrice=@PurchasePrice, PurchaseDate=@PurchaseDate, AssignedTo=@AssignedTo
+				string updateSql = @"UPDATE Assets SET Name=@Name,SerialNo=@SerialNo, Location=@Location, StatusId=@StatusId, Description=@Description, PurchasePrice=@PurchasePrice, PurchaseDate=@PurchaseDate, AssignedTo=@AssignedTo
                              WHERE Id=@Id";
 
 				await sqlconMain.ExecuteAsync(updateSql, new
 				{
 					asset.Id,
 					asset.Name,
-					asset.CategoryId,
+					asset.SerialNo,
 					asset.Location,
 					asset.StatusId,
 					asset.Description,
-					asset.PurChasePrice,
+					asset.PurchasePrice,
 					asset.PurchaseDate,
 					asset.AssignedTo
 				});

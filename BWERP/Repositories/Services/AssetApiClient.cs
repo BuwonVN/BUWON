@@ -1,5 +1,7 @@
 ﻿using BWERP.Models.Asset;
 using BWERP.Models.AssetCategory;
+using BWERP.Models.AssetHistory;
+using BWERP.Models.Comment;
 using BWERP.Models.ExpenseCategory;
 using BWERP.Models.Exppense;
 using BWERP.Models.SeedWork;
@@ -33,9 +35,10 @@ namespace BWERP.Repositories.Services
 			return result;
 		}
 
-		public Task<AssetView> GetAssetById(int id)
+		public async Task<AssetView> GetAssetById(string assetid)
 		{
-			throw new NotImplementedException();
+			var result = await _httpClient.GetFromJsonAsync<AssetView>($"/api/assets/{assetid}");
+			return result;
 		}
 
 		public async Task<PagedList<AssetView>> GetListAsset(AssetSearch assetSearch)
@@ -63,9 +66,10 @@ namespace BWERP.Repositories.Services
 			return result;
 		}
 
-		public Task<bool> UpdateAsset(int id, AssetUpdateDto request)
+		public async Task<bool> UpdateAsset(string id, AssetUpdateDto request)
 		{
-			throw new NotImplementedException();
+			var result = await _httpClient.PutAsJsonAsync($"/api/assets/{id}", request);
+			return result.IsSuccessStatusCode;
 		}
 
 		public async Task<List<AssetStatus>> GetAssetStatus()
@@ -78,6 +82,25 @@ namespace BWERP.Repositories.Services
 		{
 			var result = await _httpClient.GetFromJsonAsync<List<AssetView>>($"/api/assets/all");
 			return result;
+		}
+
+		public async Task<PagedList<AssetHistoryView>> GetAssetHistory(AssetHistorySearch historySearch)
+		{
+			var queryStringParam = new Dictionary<string, string>
+			{
+				["pageNumber"] = historySearch.PageNumber.ToString()
+			};
+
+			string url = QueryHelpers.AddQueryString($"/api/assets/history", queryStringParam);
+
+			var result = await _httpClient.GetFromJsonAsync<PagedList<AssetHistoryView>>(url);
+			return result;
+		}
+
+		public async Task<bool> CreateAssetHistory(AssetHistoryCreateDto request)
+		{
+			var result = await _httpClient.PostAsJsonAsync("/api/assets/history", request);
+			return result.IsSuccessStatusCode;
 		}
 	}
 }

@@ -1,5 +1,70 @@
-﻿<h3>AssetEdit</h3>
+﻿@page "/assets/assetedit/{assetid}"
 
-@code {
+@using BWERP.Repositories.Interfaces;
 
-}
+@inject NavigationManager NavigationManager;
+@inject IToastService toastService
+@inject IAssetApiClient assetApiClient
+
+<div class="app-content pt-3 p-md-3 p-lg-4">
+	<div class="container-xl">
+		<h1 class="app-page-title">ASSET EDIT INFORMATION</h1>
+		<hr class="mb-4">
+		<div class="row g-4 settings-section">
+			<div class="app-card app-card-settings shadow-sm p-4">
+				<div class="app-card-body">
+					<EditForm Model="assetUpdate" OnValidSubmit="SubmitTask">
+						<DataAnnotationsValidator />
+						<div class="mb-3">
+							<label for="Name" class="form-label">Name</label>
+							<InputText class="form-control" @bind-Value="assetUpdate.Name"></InputText>
+							<ValidationMessage For="()=>assetUpdate.Name"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="Name" class="form-label">Serial No</label>
+							<InputText class="form-control" @bind-Value="assetUpdate.SerialNo"></InputText>
+							<ValidationMessage For="()=>assetUpdate.SerialNo"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="Name" class="form-label">Location</label>
+							<InputText class="form-control" @bind-Value="assetUpdate.Location"></InputText>
+							<ValidationMessage For="()=>assetUpdate.Location"></ValidationMessage>
+						</div>
+						<InputSelect class="form-select" @bind-Value="@assetUpdate.StatusId">
+							<option value="0">-- Select Category --</option>
+							@foreach (var status in assetStatuses)
+							{
+								<option value="@status.Id">@status.Name</option>
+							}
+						</InputSelect>
+						<ValidationMessage For="()=>assetUpdate.StatusId"></ValidationMessage>
+						<div class="mb-3">
+							<label for="Name" class="form-label">Description</label>
+							<InputText class="form-control" @bind-Value="assetUpdate.Description"></InputText>
+							<ValidationMessage For="()=>assetUpdate.Description"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="Icon" class="form-label">Amount</label>
+							<InputNumber class="form-control" @bind-Value="assetUpdate.PurchasePrice"></InputNumber>
+							<ValidationMessage For="()=>assetUpdate.PurchasePrice"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="Description" class="form-label">Date</label>
+							<InputDate class="form-control" @bind-Value="assetUpdate.PurchaseDate"></InputDate>
+							<ValidationMessage For="()=>assetUpdate.PurchaseDate"></ValidationMessage>
+						</div>
+						<div class="mb-3">
+							<label for="Name" class="form-label">Assigned To</label>
+							<InputText class="form-control" @bind-Value="assetUpdate.AssignedTo"></InputText>
+							<ValidationMessage For="()=>assetUpdate.AssignedTo"></ValidationMessage>
+						</div>
+
+						<button type="submit" class="btn app-btn-primary">Save Changes</button>
+						<a class="btn app-btn-secondary" href="/assets/assetlist">Cancel</a>
+					</EditForm>
+				</div><!--//app-card-body-->
+			</div><!--//app-card-->
+		</div><!--//row-->
+	</div><!--//container-fluid-->
+</div>
+<!--//app-content-->

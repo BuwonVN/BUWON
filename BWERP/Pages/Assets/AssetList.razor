@@ -1,4 +1,5 @@
 ﻿@page "/assets/assetlist"
+@using BWERP.Pages.Components
 @using BWERP.Repositories.Interfaces
 
 @inject IToastService toastService
@@ -111,16 +112,16 @@
 							{
 								<tr>
 									<td>@item.Id</td>
-									<td>@item.Name</td>
-									<td>@item.CategoryId</td>
+									<td>@item.SerialNo</td>
+									<td>@item.CategoryName</td>
 									<td class="text-center">@item.Location</td>
 									<td class="text-center">@item.StatusId</td>
-									<td class="text-center">@item.PurchaseDate</td>
-									<td>@item.PurChasePrice</td>
+									<td class="text-center">@item.PurchaseDate.ToString("yyyy-MM-dd")</td>
+									<td>@item.PurchasePrice</td>
 									<td>@item.AssignedTo</td>
 									<td class="text-center">
-										<a href="/users/userdetail/@item.Id" class="btn btn-primary">Detail</a>
-										<a href="/users/useredit/@item.Id" class="btn btn-warning">Edit</a>
+										<a href="/assets/assetdetail/@item.Id" class="btn btn-primary">Detail</a>
+										<a href="/assets/assetedit/@item.Id" class="btn btn-warning">Edit</a>
 										@* <button class="btn btn-danger" @onclick="()=> OnDeleteTask(item.Id)">Delete</button> *@
 									</td>
 								</tr>

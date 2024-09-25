@@ -68,7 +68,7 @@ namespace BWERP.Pages.Assets
 		{
 			assetViews = await assetApiClient.GetAssetAll();
 			var getid = assetViews.OrderByDescending(x => x.Id).Select(c => c.Id).FirstOrDefault();
-			int numericPart = int.Parse(getid?.Substring(6) ?? "0");
+			int numericPart = int.Parse(getid?.Substring(8) ?? "0");
 			// Construct the new ID
 			newid = GetCategoryCode() + DateTime.Now.ToString("yyMMdd") + (numericPart + 1).ToString("00");
 		}

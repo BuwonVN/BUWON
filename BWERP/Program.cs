@@ -35,6 +35,8 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<IAuthenService, AuthenService>();
+//
+builder.Services.AddScoped<QRCodeGeneratorService, QRCodeGeneratorService>();
 
 builder.Services.AddScoped(sp => new HttpClient
 {

@@ -20,7 +20,11 @@
 							<InputText class="form-control" @bind-Value="assetCreateDto.Name"></InputText>
 							<ValidationMessage For="()=>assetCreateDto.Name"></ValidationMessage>
 						</div>
-
+						<div class="mb-3">
+							<label for="ParentId" class="form-label">Serial No</label>
+							<InputText class="form-control" @bind-Value="assetCreateDto.SerialNo"></InputText>
+							<ValidationMessage For="()=>assetCreateDto.SerialNo"></ValidationMessage>
+						</div>
 						<div class="mb-3">
 							<label for="Name" class="form-label">Caretory</label>
 							<InputSelect class="form-select" @bind-Value="@assetCreateDto.CategoryId">

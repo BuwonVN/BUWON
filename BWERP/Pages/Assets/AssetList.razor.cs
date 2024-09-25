@@ -1,5 +1,6 @@
 ﻿using BWERP.Models.Asset;
 using BWERP.Models.AssetCategory;
+using BWERP.Models.Exppense;
 using BWERP.Models.SeedWork;
 using BWERP.Shared;
 using Microsoft.AspNetCore.Components;
@@ -46,6 +47,12 @@ namespace BWERP.Pages.Assets
 			{
 				toastService.ShowInfo($"No data found.");
 			}
+		}
+		//PAGING
+		private async Task SelectedPage(int page)
+		{
+			assetSearch.PageNumber = page;
+			await GetListAsset();
 		}
 	}
 }

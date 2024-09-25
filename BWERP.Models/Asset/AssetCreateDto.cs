@@ -10,15 +10,19 @@ namespace BWERP.Models.Asset
 	public class AssetCreateDto
 	{
 		public string Id { get; set; }
-		[Required(ErrorMessage = "Please enter Description")]
+		[Required(ErrorMessage = "Please enter Name")]
 		public string Name { get; set; }
+
+		[Required(ErrorMessage = "Please enter Serial No")]
+		public string SerialNo { get; set; }
+
 
 		[Required(ErrorMessage = "Please select Category")]
 		public int CategoryId { get; set; }
 
 		public string? Location { get; set; }
 
-		[Required(ErrorMessage = "Please select Category")]
+		[Required(ErrorMessage = "Please select Status")]
 		public int StatusId { get; set; }
 
 		public string? Description { get; set; }

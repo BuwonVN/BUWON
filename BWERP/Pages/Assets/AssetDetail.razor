@@ -1,0 +1,145 @@
+﻿@page "/assets/assetdetail/{assetid}"
+
+@using BWERP.Pages.Components
+@using BWERP.Repositories.Interfaces
+@using BWERP.Repositories.Services
+
+@inject IAssetApiClient assetApiClient
+@inject QRCodeGeneratorService QRCodeService
+@inject NavigationManager NavigationManager;
+
+<div class="col-12 mt-2">
+	<div class="row mb-2">
+		<div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+			<div class="app-card-body p-4" style="width:100%">
+				@if (assetView == null)
+				{
+					<LoadingIndicator></LoadingIndicator>
+				}
+				else
+				{
+					<table class="table table-bordered table-hover">
+						<thead class="table-primary">
+							<tr>
+								<th>Property</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Asset ID</td>
+								<td>@assetView.Id</td>
+							</tr>
+							<tr>
+								<td>Asset Name</td>
+								<td>@assetView.Name</td>
+							</tr>
+							<tr>
+								<td>Asset Category</td>
+								<td>@assetView.CategoryId</td>
+							</tr>
+							<tr>
+								<td>Location</td>
+								<td>@assetView.Location</td>
+							</tr>
+							<tr>
+								<td>Status</td>
+								<td>@assetView.StatusId</td>
+							</tr>
+							<tr>
+								<td>Description</td>
+								<td>@assetView.Description</td>
+							</tr>
+							<tr>
+								<td>Purchase Price</td>
+								<td>@string.Format("{0:N0}", assetView.PurchasePrice) VND</td>
+							</tr>
+							<tr>
+								<td>Purchase Date</td>
+								<td>@assetView.PurchaseDate</td>
+							</tr>
+							<tr>
+								<td>Assigned To</td>
+								<td>@assetView.AssignedTo</td>
+							</tr>
+							<tr>
+								<td><strong>QR Code</strong></td>
+								<td>
+									<!-- Render the SVG directly in the HTML -->
+									@((MarkupString)QRCodeImage)
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+				}
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="app-card app-card-stats-table h-100 shadow-sm">
+			<div class="app-card-header p-3">
+				<div class="row justify-content-between align-items-center">
+					<div class="col-auto">
+						@*<a href="#" @onclick="ExportToExcel">Export</a>*@
+						<a href="/assets/assethistorycreate/@assetView.Id" class="btn btn-outline-success">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+								<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+								<path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+							</svg>
+							Add History
+						</a>
+						<button class="btn btn-outline-info">
+							<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+								<path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+							</svg>
+							Export Excel
+						</button>
+						<a href="/assets/assetlist" class="btn btn-outline-secondary">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+								<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+								<path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+							</svg>
+							Back to list
+						</a>
+					</div><!--//col-->
+				</div><!--//row-->
+			</div><!--//app-card-header-->
+
+			<div class="app-card-body p-2">
+				<div class="table-responsive">
+					<table class="table table-bordered auto-resize">
+						<thead class="table-info">
+							<tr class="text-center">
+								<th>No.</th>
+								<th>Asset Id</th>
+								<th>Description</th>
+								<th>Date</th>
+								<th>Event</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in assetHistoryView)
+							{
+								<tr>
+									<td>@item.Id</td>
+									<td class="text-center">@item.AssetId</td>
+									<td>@item.Description</td>
+									<td class="text-center">@item.Date</td>
+									<td>@item.Event</td>
+								</tr>
+							}
+						</tbody>
+						<tfoot>
+							
+						</tfoot>
+					</table>
+				</div>
+
+			</div><!--//app-card-body-->
+		</div>
+	</div>
+</div>
+
