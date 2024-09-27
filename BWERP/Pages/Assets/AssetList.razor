@@ -117,7 +117,7 @@
 									<td class="text-center">@item.Location</td>
 									<td class="text-center">@item.StatusId</td>
 									<td class="text-center">@item.PurchaseDate.ToString("yyyy-MM-dd")</td>
-									<td>@item.PurchasePrice</td>
+									<td class="text-end">@string.Format("{0:N0}", item.PurchasePrice)</td>
 									<td>@item.AssignedTo</td>
 									<td class="text-center">
 										<a href="/assets/assetdetail/@item.Id" class="btn btn-primary">Detail</a>

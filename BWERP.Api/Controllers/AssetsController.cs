@@ -33,10 +33,10 @@ namespace BWERP.Api.Controllers
 			return Ok(result);
 		}
 		//GET ALL ASSET
-		[HttpGet("all")]
-		public async Task<IActionResult> GetAssetAll()
+		[HttpGet("getid")]
+		public async Task<IActionResult> GetLatestId()
 		{
-			var result = await _assetRepository.GetAssetAll();
+			var result = await _assetRepository.GetLatestId();
 			return Ok(result);
 		}
 		//GET PAGING LIST ASSET

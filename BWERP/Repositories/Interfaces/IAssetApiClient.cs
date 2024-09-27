@@ -10,7 +10,7 @@ namespace BWERP.Repositories.Interfaces
 	{
 		Task<List<AssetCategoryView>> GetCategory();
 		Task<List<AssetStatus>> GetAssetStatus();
-		Task<List<AssetView>> GetAssetAll();
+		Task<AssetView> GetLatestId();
 		Task<PagedList<AssetView>> GetListAsset(AssetSearch assetSearch);
 		Task<AssetView> GetAssetById(string assetid);
 		Task<bool> CreateAsset(AssetCreateDto request);

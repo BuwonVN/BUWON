@@ -77,17 +77,21 @@ namespace BWERP.Api.Repositories.Services
 			return asset;
 		}
 
-		public async Task<List<AssetView>> GetAssetAll()
+		public async Task<Asset> GetLatestId()
 		{
 			try
 			{
-				var query = "select Id, Name,SerialNo, CategoryId, Location, StatusId, Description, PurchaseDate, PurchasePrice, AssignedTo from Assets";
-				var data = await sqlconMain.QueryAsync<AssetView>(query);
-				return data.ToList();
+				var query = @"SELECT TOP 1 Id FROM Assets 
+                      ORDER BY SUBSTRING(Id, 7, 2) DESC,
+                               SUBSTRING(Id, 5, 2) DESC,
+                               SUBSTRING(Id, 3, 2) DESC,
+                               CAST(SUBSTRING(Id, 9, 2) AS INT) DESC";
+				var data = await sqlconMain.QueryAsync<Asset>(query);
+				return data.FirstOrDefault();
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
 		}
 

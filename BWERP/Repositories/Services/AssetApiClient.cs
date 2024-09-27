@@ -78,9 +78,9 @@ namespace BWERP.Repositories.Services
 			return result;
 		}
 
-		public async Task<List<AssetView>> GetAssetAll()
+		public async Task<AssetView> GetLatestId()
 		{
-			var result = await _httpClient.GetFromJsonAsync<List<AssetView>>($"/api/assets/all");
+			var result = await _httpClient.GetFromJsonAsync<AssetView>($"/api/assets/getid");
 			return result;
 		}
 

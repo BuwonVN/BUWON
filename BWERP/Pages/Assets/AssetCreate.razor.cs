@@ -1,8 +1,5 @@
 ﻿using BWERP.Models.Asset;
 using BWERP.Models.AssetCategory;
-using BWERP.Models.Exppense;
-using BWERP.Repositories.Interfaces;
-using BWERP.Repositories.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
@@ -14,9 +11,9 @@ namespace BWERP.Pages.Assets
 		private AssetCreateDto assetCreateDto = new AssetCreateDto();
 		private List<AssetCategoryView> assetCategories = new List<AssetCategoryView>();
 		private List<AssetStatus> assetStatuses = new List<AssetStatus>();
-		private List<AssetView> assetViews = new List<AssetView>();
+		private AssetView assetView = new AssetView();
 		//VARIALES
-		private string username, newid;
+		private string username, newAssetId;
 		protected override async Task OnInitializedAsync()
 		{
 			assetCategories = await assetApiClient.GetCategory();
@@ -43,7 +40,7 @@ namespace BWERP.Pages.Assets
 				toastService.ShowError($"Please select Asset Status.");
 				return;
 			}
-			assetCreateDto.Id = newid;
+			assetCreateDto.Id = newAssetId;
 			assetCreateDto.CreatedDate = DateTime.Now;
 			assetCreateDto.CreatedUser = username;
 			var result = await assetApiClient.CreateAsset(assetCreateDto);
@@ -66,11 +63,33 @@ namespace BWERP.Pages.Assets
 		}
 		private async Task GetNewId()
 		{
-			assetViews = await assetApiClient.GetAssetAll();
-			var getid = assetViews.OrderByDescending(x => x.Id).Select(c => c.Id).FirstOrDefault();
-			int numericPart = int.Parse(getid?.Substring(8) ?? "0");
-			// Construct the new ID
-			newid = GetCategoryCode() + DateTime.Now.ToString("yyMMdd") + (numericPart + 1).ToString("00");
+			var latestid = await assetApiClient.GetLatestId();
+			// Current date in ddMMyy format
+			string currentDate = DateTime.Now.ToString("yyMMdd");
+
+			if (latestid != null)
+			{
+				// Extract the date and sequence from the last AssetId
+				string lastDatePart = latestid.Id.Substring(2, 6); // "240926" for PC240926
+				string lastSequencePart = latestid.Id.Substring(8); // "01" for PC24092601
+
+				if (lastDatePart == currentDate)
+				{
+					// If the date is the same, increment the sequence
+					int newSequence = int.Parse(lastSequencePart) + 1;
+					newAssetId = GetCategoryCode() + $"{currentDate}{newSequence:D2}"; // Ensure 2 digits for sequence (e.g., 01, 02)
+				}
+				else
+				{
+					// If it's a new date, start with sequence 01
+					newAssetId = GetCategoryCode() + $"{currentDate}01";
+				}
+			}
+			else
+			{
+				// No previous AssetId found, start with PCddMMyy01 for the current date
+				newAssetId = GetCategoryCode() + $"{currentDate}01";
+			}
 		}
 	}
 }

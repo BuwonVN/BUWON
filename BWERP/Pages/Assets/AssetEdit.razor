@@ -30,14 +30,18 @@
 							<InputText class="form-control" @bind-Value="assetUpdate.Location"></InputText>
 							<ValidationMessage For="()=>assetUpdate.Location"></ValidationMessage>
 						</div>
-						<InputSelect class="form-select" @bind-Value="@assetUpdate.StatusId">
-							<option value="0">-- Select Category --</option>
-							@foreach (var status in assetStatuses)
-							{
-								<option value="@status.Id">@status.Name</option>
-							}
-						</InputSelect>
-						<ValidationMessage For="()=>assetUpdate.StatusId"></ValidationMessage>
+						<div class="mb-3">
+							<label for="Name" class="form-label">Status</label>
+							<InputSelect class="form-select" @bind-Value="@assetUpdate.StatusId">
+								<option value="0">-- Select Category --</option>
+								@foreach (var status in assetStatuses)
+								{
+									<option value="@status.Id">@status.Name</option>
+								}
+							</InputSelect>
+							<ValidationMessage For="()=>assetUpdate.StatusId"></ValidationMessage>
+						</div>
+
 						<div class="mb-3">
 							<label for="Name" class="form-label">Description</label>
 							<InputText class="form-control" @bind-Value="assetUpdate.Description"></InputText>
