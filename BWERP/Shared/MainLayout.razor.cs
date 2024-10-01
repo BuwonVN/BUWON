@@ -35,10 +35,10 @@ namespace BWERP.Shared
 					leftsidebar = await menuApiClient.GetMenuByUser(user.Identity.Name);
 
 					// Avoid unnecessary redirect
-					if (NavigationManager.Uri != NavigationManager.BaseUri)
-					{
-						NavigationManager.NavigateTo("/");
-					}
+					//if (NavigationManager.Uri != NavigationManager.BaseUri)
+					//{
+					//	NavigationManager.NavigateTo("/");
+					//}
 				}
 				catch (Exception ex)
 				{

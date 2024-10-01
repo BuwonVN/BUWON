@@ -1,7 +1,9 @@
-﻿@page "/assets/showbyqr/{assetid}"
+﻿@layout BlankLayout
+@page "/assets/showbyqr/{assetid}"
 
 <h3>AssetShowByQR</h3>
 
 @code {
-
+	[Parameter]
+	public string assetid { set; get; }
 }

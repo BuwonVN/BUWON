@@ -2,10 +2,8 @@ using BWERP.Api.EF;
 using BWERP.Api.Entities;
 using BWERP.Api.Repositories.Interfaces;
 using BWERP.Api.Repositories.Services;
-using BWERP.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
